@@ -1,0 +1,68 @@
+05:50:00.776  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=1102 LOAD=OFF STRING=IN stall=2568 mqtt=1 rssi=-72
+07:42:46.526  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=7867 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-69
+07:54:12.953  MARK A7 COMBINED string out + load, shed ON, 90 s
+07:54:16.013  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=8557 LOAD=OFF STRING=OUT stall=10 mqtt=1 rssi=-70
+07:54:16.202  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=8557 LOAD=ON STRING=OUT stall=10 mqtt=1 rssi=-71
+07:55:53.290  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=8654 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-70
+07:55:53.481  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=8654 LOAD=OFF STRING=IN stall=9 mqtt=1 rssi=-70
+07:55:53.544  MARK A7 result: no trip, ON 23.1 Hz
+08:01:01.636  MARK B7 COMBINED string out + load, shed OFF, 90 s
+08:01:06.641  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=8967 LOAD=OFF STRING=OUT stall=10 mqtt=1 rssi=-70
+08:01:06.898  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=8967 LOAD=ON STRING=OUT stall=11 mqtt=1 rssi=-69
+08:02:43.508  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=9064 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-70
+08:02:43.699  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=9064 LOAD=OFF STRING=IN stall=9 mqtt=1 rssi=-70
+08:02:43.756  MARK B7 result: TRIP FAULT_OC
+08:10:09.041  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=9510 LOAD=OFF STRING=IN stall=7 mqtt=1 rssi=-72
+08:17:15.078  MARK A8 COMBINED string out + load, shed ON, 90 s
+08:17:17.996  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=9939 LOAD=OFF STRING=OUT stall=7 mqtt=1 rssi=-72
+08:17:18.208  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=9939 LOAD=ON STRING=OUT stall=11 mqtt=1 rssi=-73
+08:18:54.776  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=10035 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-72
+08:18:54.975  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=10036 LOAD=OFF STRING=IN stall=11 mqtt=1 rssi=-72
+08:18:55.034  MARK A8 result: no trip, ON 17.4 Hz
+08:24:01.126  MARK B8 COMBINED string out + load, shed OFF, 90 s
+08:24:03.993  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=10345 LOAD=OFF STRING=OUT stall=8 mqtt=1 rssi=-72
+08:24:04.206  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=10345 LOAD=ON STRING=OUT stall=11 mqtt=1 rssi=-71
+08:25:40.773  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=10441 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-71
+08:25:40.978  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=10442 LOAD=OFF STRING=IN stall=9 mqtt=1 rssi=-73
+08:25:41.042  MARK B8 result: TRIP FAULT_OC
+08:33:06.625  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=10887 LOAD=OFF STRING=IN stall=7 mqtt=1 rssi=-72
+10:11:24.650  MARK A9 COMBINED string out + load, shed ON, 90 s
+10:11:27.847  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=16788 LOAD=OFF STRING=OUT stall=9 mqtt=1 rssi=-76
+10:11:28.050  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=16789 LOAD=ON STRING=OUT stall=11 mqtt=1 rssi=-75
+10:13:05.138  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=16886 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+10:13:05.347  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=16886 LOAD=OFF STRING=IN stall=12 mqtt=1 rssi=-76
+10:13:05.430  MARK A9 result: no trip, ON 12.3 Hz
+10:18:32.387  MARK B9 COMBINED string out + load, shed OFF, 90 s
+10:18:35.296  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=17216 LOAD=OFF STRING=OUT stall=9 mqtt=1 rssi=-76
+10:18:35.495  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=17216 LOAD=ON STRING=OUT stall=10 mqtt=1 rssi=-77
+10:20:12.566  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=17313 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-74
+10:20:12.757  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=17313 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-76
+10:20:12.840  MARK B9 result: no trip, ON 10.3 Hz
+10:25:21.819  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=17622 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-76
+10:26:00.512  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=17661 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-76
+10:59:41.487  MARK A10 COMBINED string out + load, shed ON, 90 s
+10:59:44.478  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=19685 LOAD=OFF STRING=OUT stall=8 mqtt=1 rssi=-75
+10:59:44.660  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=19685 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-75
+11:01:21.957  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19782 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+11:01:22.163  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19783 LOAD=OFF STRING=IN stall=10 mqtt=1 rssi=-75
+11:01:22.274  MARK A10 result: no trip, ON 31.7 Hz
+11:06:49.317  MARK B10 COMBINED string out + load, shed OFF, 90 s
+11:06:52.206  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=20113 LOAD=OFF STRING=OUT stall=7 mqtt=1 rssi=-76
+11:06:52.393  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=20113 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-75
+11:08:29.668  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=20210 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-74
+11:08:29.888  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=20210 LOAD=OFF STRING=IN stall=12 mqtt=1 rssi=-76
+11:08:29.987  MARK B10 result: TRIP FAULT_OC
+11:15:50.403  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=20651 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-75
+11:33:34.264  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=21715 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-75
+12:02:25.721  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=23446 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-75
+13:09:39.064  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=27479 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-75
+14:37:08.051  MARK L1 SAG-LOCK CHECK (shed on, build 18E22A85): load 240 s, string out +60, in +120
+14:37:11.000  R1 ON 240 -> [local] OK R1=1 R2=0 R3=0 R4=0 up=32731 LOAD=ON STRING=IN stall=9 mqtt=1 rssi=-75
+14:38:15.201  R2 ON -> [local] OK R1=1 R2=1 R3=0 R4=0 up=32796 LOAD=ON STRING=OUT stall=7 mqtt=1 rssi=-75
+14:38:16.118  STATUS -> [local] OK R1=1 R2=1 R3=0 R4=0 up=32796 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-75
+14:39:15.313  R2 OFF -> [local] OK R1=1 R2=0 R3=0 R4=0 up=32856 LOAD=ON STRING=IN stall=8 mqtt=1 rssi=-75
+14:41:24.634  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=32985 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+14:41:24.675  MARK L1 done
+14:42:05.910  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=33026 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-75
+14:44:52.833  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=33193 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-75
+17:23:34.501  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=42715 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75

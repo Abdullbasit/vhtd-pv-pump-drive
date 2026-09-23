@@ -1,0 +1,569 @@
+\documentclass[journal]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{rotating}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{textcomp}
+\hyphenation{photo-voltaic}
+\begin{document}
+\title{Field-Validated Voltage-Headroom Torque Droop for Riding Through DC-Link Collapse in PV-Direct Sensorless Pump Drives}
+\author{Abdulbasit H. Ahmed, Basil M. Saied, and Yasir M. Ameen\thanks{The authors are with the College of Engineering, University of Mosul, Mosul 41001, Iraq. Corresponding author: Abdulbasit H. Ahmed (e-mail: aa.ieee85@gmail.com).}}
+\maketitle
+\begin{abstract}
+On a PV-direct pump drive (no battery), a fast-moving cloud edge collapses the DC link and trips the drive. Each trip costs a restart and about 2~m$^{3}$ of water on the well studied here. The purpose of this work is to make the drive ride through such cloud edges. The collapse takes 50--200~ms. This paper presents the Voltage-Headroom Torque Droop (VHTD) for sensorless field-oriented control (FOC): in every 200~$\mu$s control interrupt the torque-current limit is multiplied by a factor derived from the instantaneous DC-link voltage. A frequency-space counterpart was built into the volts-per-hertz (V/f) firmware. The method was tested on a 22~kW drive feeding a submersible pump in a 70~m well, with relay-switched string removal and a resistor bank, in 40 controlled shots over four days and 45 natural cloud events. Without the droop the FOC drive tripped in 10 of 10 shots; with it, in 0 of 12. The baseline V/f controller tripped in 5 of 5 shots, V/f with the retreat in 0 of 3. No natural cloud event caused a trip. Flow-metered yield was 3.68 L/Wh under FOC and 3.69 L/Wh under V/f at the same operating point. A control-rate droop on the instantaneous bus voltage, not the choice of control law, determines whether a PV-direct drive rides through a cloud edge.
+\end{abstract}
+\begin{IEEEkeywords}
+photovoltaic pumping, sensorless field-oriented control, constant-power load, DC-link stability, maximum power point tracking, induction motor drive, V/f control
+\end{IEEEkeywords}
+\IEEEpeerreviewmaketitle
+\section{Introduction}
+
+A PV-direct pumping system stores water instead of electrical energy \cite{r1,r2}. The drive is connected directly to the array, without a battery, and the water tank is the storage. On the plant studied here there is no tank; the water goes straight to an irrigated field. The array is a source with a knee. Below a certain load its voltage is nearly constant, and above that load the voltage falls quickly. The behaviour of the drive as a load, seen from the array, is therefore important in practice. It decides whether a passing cloud causes a small dip in output or a full trip and restart.
+
+Moving a drive of this kind from V/f control to sensorless FOC \cite{r6,r7} is generally recommended, because FOC gives better efficiency, more torque at low speed and a wider operating range. The stability of these drives is normally analysed with respect to the motor \cite{r2,r3,r4,r5}. It is not usually analysed with respect to the source. On the pump studied here, the efficiency gain that is the usual reason for the migration did not appear when it was measured with a flow meter (Section~X-D).
+
+During the development of the drive it was expected that moving from V/f to FOC would introduce the collapse problem, because FOC regulates current. According to this expectation, a V/f drive sheds load as the bus voltage falls, so it rides through a cloud, while an FOC drive keeps its current and collapses. The measurements reported here show that both controllers collapse. On the same machine, the same array and the same disturbance, the baseline V/f controller tripped as reliably as the FOC controller. What protects either drive is a headroom droop, that is, a reduction of the demand of the drive that is computed inside the control loop from the instantaneous bus voltage. FOC is the better place to implement it, for reasons given in Section~XI.
+
+The contributions of this paper are the following.
+\begin{enumerate}
+\item A measurement of the collapse itself. With the link capacitance and the array knee of this plant, the bus falls by 90~V in 51~ms and by 225~V in 190~ms on a 14~kW array. This is about a hundred times faster than the tracker, and faster than any bus limit that acts once per tracker slot (Section~IV).
+\item A correction of the usual load-characteristic argument, based on measurement. FOC is a constant-power load by design. A V/f drive at its modulation ceiling behaves as a constant-power load for the duration of the collapse, because the rotor cannot slow down as fast as the voltage falls (Section~III).
+\item The Voltage-Headroom Torque Droop: its definition, its place in the control interrupt, a design rule for its settings, its floor and its sensitivity to the settings, together with the two interactions with the tracker that it creates and the rules that resolve them (Sections VI, VII).
+\item A frequency-space version of the droop for V/f, built into the same drive so that only the control law differs. It also survives the disturbance, so the question becomes not whether a drive survives but in what state it is left afterwards (Sections VIII, X).
+\item A validation method with two parts, one testing the reaction speed of the droop and the other testing whether an operating point still exists, carried out as paired droop-on and droop-off trials on the same array, over 6.8--14~kW and four days, with the water lost per trip measured (Sections IX, X).
+\item Field evidence of three forms of the same mechanism: the cloud-edge trip, the failed dawn start, and a limit cycle between the tracker and the droop that has not been described before (Section~V).
+\end{enumerate}
+
+\section{System}
+
+\textbf{Platform.} The drive described in this paper is a purpose-built research platform: the power stage, the control board, the two control firmwares, the maximum-power-point tracker, the protections, the capture ring, the logging tools and the relay box used for the tests were all developed for this work. The only purchased parts are the IGBT module, the pump and the PV modules. The two control laws are implemented as alternative firmwares for the same control board, so that they can be compared on the same drive, the same array and the same well. In this paper the V/f firmware is called the baseline V/f controller.
+
+\textbf{Inverter (Fig.~\ref{fig:1}).} The inverter is a 22~kW three-phase unit built on an Infineon FS100R12KT3 IGBT six-pack (1200~V / 100~A), controlled by an STM32F334R8 with a 5~kHz control interrupt and 4~$\mu$s dead time. The control is sensorless FOC with an MRAS speed observer \cite{r8,r9}. MRAS stands for model reference adaptive system; the observer estimates the rotor speed by comparing two models of the rotor flux, as shown in Fig.~\ref{fig:1}. The estimated speed is the output of an adaptation controller driven by the error between the two flux estimates,
+
+\begin{sidewaysfigure*}[p]\centering
+\includegraphics[width=\textwidth]{../paper_figs/fig01_block.png}
+\caption{System and control block diagram: power path, the two bus measurements (per-interrupt bus voltage, 80~ms RMS block the 80~ms RMS bus value), the FOC path with VHTD as one multiplier on $i_{q,\mathrm{cap}}$, and the V/f path with the per-interrupt frequency retreat.}\label{fig:1}
+\end{sidewaysfigure*}
+
+
+\begin{equation}
+\hat{\omega}_m = \left(K_p + \frac{K_i}{s}\right)\varepsilon
+\label{eq:1}
+\end{equation}
+
+where $\varepsilon$ is the cross-product of the two rotor-flux estimates \cite{r8}. The phase currents are measured on phases U and W with ACS758-LCB-100B Hall-effect sensors, and the current of phase V is reconstructed from the other two; the DC-link current is measured with an HCSH300-S Hall-effect sensor. The DC-link voltage and current are sampled in every control interrupt. The DC link is $C = 1.5$ mF (2S2P $\times$ 1500~$\mu$F / 450~V).
+
+\textbf{Motor and pump.} The pump is a Grundfos SP 60/8 submersible at 70~m head, delivering to a sprinkler-irrigated alfalfa field. There is no storage tank, so the water is used as it is pumped. The measured motor parameters are $R_s$ = 0.72--0.89 $\Omega$, depending on temperature, and $L_m$ = 57.2 mH. The pump begins to deliver water at a rotor frequency of 26.4~Hz, referred to below as the cut-in. The best specific yield, 4.08--4.11 L/Wh, was measured at about 36~Hz rotor frequency over 31 operating points.
+
+\textbf{Array.} The array has 36 LONGi Hi-MO 7 610~W modules, 12 in series and 3 strings in parallel (21.96~kW$_{\mathrm{p}}$ nominal). The open-circuit voltage $V_{\mathrm{oc}}$ at the site is 519--535~V. On the controlled-test days the array supplied 13.8--14.3~kW at its maximum power point. Under FOC this was 472~V and 30~A at 46.5~Hz stator frequency, 43~Hz rotor frequency and 53~m$^{3}$/h. Under V/f it was 450--465~V and 35--37~A at 48--50~Hz stator frequency, with the modulation index held at its 0.94 ceiling.
+
+\textbf{Tracker (FOC).} The maximum-power-point tracker is a perturb-and-observe algorithm \cite{r10,r11,r23} acting on the stator frequency set-point $f_{\mathrm{set}}$ in steps $\Delta f$ = 0.2~Hz,
+
+\begin{equation}
+f_{\mathrm{set}}(n+1) = f_{\mathrm{set}}(n) + \Delta f \cdot \mathrm{sgn}\!\left(\Delta P_n \cdot \Delta f_{n-1}\right)
+\label{eq:2}
+\end{equation}
+
+where $\Delta P_n$ is the change in DC power measured after the previous step. To decide the sign of $\Delta P_n$, the tracker averages six 80~ms RMS blocks after discarding two. This decision is called a verdict below, and there is one verdict about every 0.8~s. A separate cloud path retreats the set-point by 0.2~Hz per 100~ms pass while the bus is more than 5\% below the last judged voltage. It then returns toward the set-point it had before the sag, with a back-off that doubles at each attempt. A slip cap keeps the set-point at or below the filtered rotor frequency plus 3~Hz.
+
+\textbf{Tracker (V/f).} The baseline V/f controller has its own tracker. Its perturb-and-observe tracker also acts on the stator frequency, in a 101~ms slot, and the set-point is followed by a ramp of 2.5~Hz/s. It has a bus-voltage frequency ceiling applied once per slot,
+
+\begin{equation}
+f_{\mathrm{set}} \le 0.11\,V
+\label{eq:3}
+\end{equation}
+
+with V the 80~ms RMS value of the bus voltage in volts and $f_{\mathrm{set}}$ in hertz. The modulation index is 11$\cdot$f/$V_{\mathrm{dc}}$, limited to 0.94, computed from the 80~ms RMS bus value. The undervoltage protection stops the inverter when that value falls below 200~V, and restarts it automatically from 0.1~Hz once the bus is above 250~V again.
+
+\textbf{Start.} A sensorless observer has no back-EMF to work from at standstill, so the drive cannot start in closed loop. It starts instead in current-frequency (I-f) mode: a current vector of fixed amplitude, $0.45\,I_{\mathrm{rms}}\sqrt{2}$ = 21.6~A, is imposed on the stator while its frequency is ramped up, and the rotor follows the imposed field. At 10~Hz the observer has enough signal, and the drive hands over to closed-loop FOC; the imposed ramp continues to 15~Hz during the handover. On a PV array the fixed amplitude also decides whether the array can sustain the start at all, which is the reason for the start probe of Section~VII-A.
+
+\textbf{Two firmwares on one drive.} For the comparison the baseline V/f controller was rebuilt with the same interrupt rate, current scaling and protections as the FOC firmware, so that only the control law differs between the two arms.
+
+\textbf{Instrumentation.} Two measures of the bus voltage appear throughout this paper and must be kept apart. The per-interrupt bus sample is the value read in each 200~$\mu$s control interrupt. The 80~ms RMS value is an average over 400 samples, refreshed every 80~ms; the tracker and the undervoltage protection use this slower value. Under FOC a capture ring of 256 samples and three channels records any three of 28 signals at intervals from 1.6~ms to 80~ms, including the per-interrupt bus sample, the 80~ms RMS value, the torque current, the observer speed and the droop factor. The ring is read out periodically and is frozen automatically at the moment of a protection trip. Slow telemetry is logged every 3~s. The flow is measured by a clamp-on transit-time ultrasonic meter on the delivery line, with two transducers on the pipe at the well head and a Modbus transmitter on the RS485 bus of the drive. A DC clamp meter measures the load-bank current. The V/f firmware has no capture ring, so its telemetry was polled at about 8~Hz; every value refreshes once per 80~ms RMS block, so V/f transients are resolved to one block. Three per-interrupt diagnostics were added to the retreat build: the lowest bus voltage, the lowest frequency while retreating, and the number of interrupts in which the retreat acted. Each figure states which record it is based on.
+
+\textbf{Measurement.} Every quantity reported in the paper was measured as follows. The DC-link voltage and the DC current come from the drive's own sensors; both are available as per-interrupt samples and as 80~ms RMS values, and the DC current sensor was calibrated against a clamp meter. The array power is the product of the two. The phase currents come from the two current sensors on phases U and W, and the third phase is reconstructed from them. The rotor speed is the estimate of the observer, checked against the stator frequency and the slip. The flow comes from the clamp-on transit-time ultrasonic meter on the delivery pipe; the meter's own transit-time consistency figure is logged with every sample. The specific yield is the delivered volume divided by the DC energy over the same interval. The relay box time-stamps every command on the same clock as the drive log. The power of the resistor bank is the clamp-meter reading of its current multiplied by the bus voltage. The head of 70~m is the static lift of the installation.
+
+\textbf{How the fast records were captured (Fig.~\ref{fig:2}).} The capture ring works as follows. Three chosen signals are sampled in the 200~$\mu$s control interrupt and decimated by a settable factor, so that one sample is kept every 1.6~ms to 80~ms. The samples are kept in a circular buffer of 256 entries per signal in the RAM of the control board. When a protection trips, the buffer freezes, so that the last 0.4~s to 20~s before the trip, depending on the decimation, are preserved. Otherwise the PC pulls the buffer over the RS485 link about every 24~s. The 3~s telemetry runs in parallel over the same link. The relay box time-stamps every command on the PC clock, so that the edge of a disturbance can be located in both records.
+
+\begin{figure*}[!t]\centering
+\includegraphics[width=\textwidth]{../paper_figs/fig_capture_chain.png}
+\caption{How the fast records were captured: three signals from the 200~$\mu$s interrupt, decimated into a 256-sample ring buffer, frozen on a trip or pulled over RS485; the 3~s telemetry in parallel; the relay box time-stamping every command on the same clock.}\label{fig:2}
+\end{figure*}
+
+
+\section{The Load Characteristic, as Designed and as Measured}
+
+Under FOC \cite{r6,r7} the current loop regulates the direct-axis and quadrature-axis currents $i_d$ and $i_q$. When the bus voltage sags, the loop raises the duty ratio to keep the current at its reference. Constant torque at a falling voltage means constant power, so the DC current actually rises as the bus falls. This is a positive-feedback loop, shown in Fig.~\ref{fig:3}: the bus falls, the current loop raises the duty ratio to hold the current, the DC current rises, the link capacitor discharges faster, and the bus falls further. With the droop of Section~VI the same loop is broken, because a falling bus lowers the torque-current limit and therefore the DC current. The torque-current limit is set by the current circle of the inverter,
+
+\begin{figure}[!t]\centering
+\includegraphics[width=\columnwidth]{../paper_figs/fig_cpl_loop.png}
+\caption{The constant-power feedback loop on a PV link, without the droop (left) and with it (right).}\label{fig:3}
+\end{figure}
+
+
+\begin{equation}
+i_{q,\mathrm{cap}} = \sqrt{i_{\max}^{2} - i_{d,\mathrm{ref}}^{2}}
+\label{eq:4}
+\end{equation}
+
+and it contains no term that depends on the bus voltage. Nothing reduces the demand until a protection trips, and a trip is a sudden shut-down rather than a gradual reduction. Field weakening makes the situation slightly worse: when the voltage limit falls, $i_{d,\mathrm{ref}}$ is reduced, which leaves more room for $i_q$ inside the fixed current circle. This was measured on 2026-09-10 at 10:57 with a 5.1~kW resistive step at 80~ms sampling (Fig.~\ref{fig:4}(a)). The bus fell from 472 to 435~V in 160~ms, and the DC current of the drive stayed at 30~A.
+
+\begin{figure*}[!t]\centering
+\includegraphics[width=0.85\textwidth]{../paper_figs/fig_steps_5_10kW.png}
+\caption{Resistive steps on 2026-09-10, 80~ms records: bus voltage, DC current and the droop factor k. (a) 5.1~kW step: 472 $\rightarrow$ 435~V in 160~ms while the current stays at 30~A; the droop was armed but the bus never fell below HI, so k stayed at 1.0 and the trace shows the drive's own constant-power behaviour; (b) 10.4~kW step: 474 $\rightarrow$ 384~V within one sample, k to 0.79 and the current 30 $\rightarrow$ 25~A in the same sample; the droop holds the bus at 390--400~V for 2.5~s until the tracker's retreat catches up.}\label{fig:4}
+\end{figure*}
+
+
+Under V/f the motor voltage is the modulation index m times the bus voltage, and the modulation index follows the volts-per-hertz law up to a ceiling,
+
+\begin{equation}
+m = \min\left(0.94,\; 11\,f/V\right)
+\label{eq:5}
+\end{equation}
+
+with f the stator frequency in hertz and V the 80~ms RMS value of the bus voltage in volts. In steady state a bus sag lowers the motor voltage and the flux, the torque falls roughly with the square of the voltage, and the power falls with it. The usual conclusion is that this load shedding is a property of the modulator and needs no controller. Two effects prevent it from working on the time scale of a collapse. First, a PV-direct V/f drive at the maximum power point is already at the ceiling of (\ref{eq:5}); on this array the index was 0.94 at 48--50~Hz (Fig.~\ref{fig:5}(a)). The modulator has no reserve, so the motor voltage simply follows the bus. This is why the constant-power description of Section~IV applies to the V/f drive during the collapse. Second, the rotor cannot follow. A 15~kW rotor with a 70~m water column keeps almost the same speed over 100~ms. A falling stator voltage at a fixed stator frequency therefore increases the slip, and the stator current does not fall with the flux, which is the known behaviour of an induction motor under a voltage sag at fixed frequency \cite{r27}. The measurement in Section~X and Fig.~\ref{fig:5}(a) shows this directly. Within one 80~ms block the drive went from 461~V and 36.8~A to 205~V and 29.9~A. It kept 80\% of its DC current at 44\% of its bus voltage, which means that it was still drawing 45\% of its power from a bus that had lost 56\% of its voltage. The $V^{2}$ description is correct on the tracker's time scale of seconds. It is not correct on the link's time scale of tens of milliseconds. The self-shedding V/f drive of the literature exists only in steady state.
+
+\begin{figure*}[!t]\centering
+\includegraphics[width=\textwidth]{../paper_figs/fig14_E2_vf_vs_vhtd.png}
+\caption{The same disturbance on three control laws, 2026-09-14: (a) the baseline V/f controller trips, (b) V/f with the per-interrupt frequency retreat rides through, (c) FOC with VHTD rides through.}\label{fig:5}
+\end{figure*}
+
+
+\section{DC-Link Stability on a PV Source}
+
+The DC link of capacitance C connects the array, which supplies the current $i_{\mathrm{pv}}$(V), to the drive, which draws the load current $i_L$(V, t). The link voltage V therefore obeys
+
+\begin{equation}
+C\,\frac{dV}{dt} = i_{\mathrm{pv}}(V) - i_L(V,t)
+\label{eq:6}
+\end{equation}
+
+with $C = 1.5$ mF on this drive. The array current is described by the single-diode model of \cite{r20} in its explicit form,
+
+\begin{equation}
+i_{\mathrm{pv}} = I_{\mathrm{sc}}\left[1 - C_1\left(\exp\!\left(\frac{V}{C_2 V_{\mathrm{oc}}}\right) - 1\right)\right]
+\label{eq:7}
+\end{equation}
+
+\begin{equation}
+\begin{aligned} C_2 &= \frac{V_{\mathrm{mp}}/V_{\mathrm{oc}} - 1}{\ln\!\left(1 - I_{\mathrm{mp}}/I_{\mathrm{sc}}\right)},\\ C_1 &= \left(1 - \frac{I_{\mathrm{mp}}}{I_{\mathrm{sc}}}\right)\exp\!\left(-\frac{V_{\mathrm{mp}}}{C_2 V_{\mathrm{oc}}}\right)\end{aligned}
+\label{eq:8}
+\end{equation}
+
+where $V_{\mathrm{oc}}$, $V_{\mathrm{mp}}$, $I_{\mathrm{mp}}$ and $I_{\mathrm{sc}}$ are the open-circuit voltage, the maximum-power voltage and current, and the short-circuit current. On the test day of Fig.~\ref{fig:6} these were $V_{\mathrm{oc}}$ = 519~V, $V_{\mathrm{mp}}$ = 472~V, $I_{\mathrm{mp}}$ = 30~A and $I_{\mathrm{sc}}$ = 34~A, which gives $C_2$ $\approx$ 0.042 and $C_1$ $\approx$ 5 $\times$ 10$^{-11}$. The load current depends on the type of load. A constant-power load, usually abbreviated CPL, draws
+
+\begin{figure}[!t]\centering
+\includegraphics[width=\columnwidth]{../paper_figs/fig02_iv.png}
+\caption{Measured array operating points 2026-09-10 with the constant-power, $V^{2}$ and resistive load lines.}\label{fig:6}
+\end{figure}
+
+
+\begin{equation}
+i_L = \frac{P}{V},\qquad \frac{di_L}{dV} = -\frac{P}{V^{2}}
+\label{eq:9}
+\end{equation}
+
+and a resistive load draws
+
+\begin{equation}
+i_L = \frac{V}{R},\qquad \frac{di_L}{dV} = \frac{1}{R}
+\label{eq:10}
+\end{equation}
+
+A constant-power load therefore presents a negative incremental resistance to the link. This is the classical cause of instability in DC power-distribution and CPL stability work \cite{r12,r13,r14,r15}, and it is still an active research field \cite{r16,r17,r18,r19,r22}, including DC-link dynamics in PV conversion \cite{r21}. With the array conductance defined as $g(V)$ = $-$d$i_{\mathrm{pv}}$/dV, which is positive on the whole I-V curve, the linearisation of (\ref{eq:6}) at an operating point is stable if and only if \cite{r12,r15,r26}
+
+\begin{equation}
+g(V) > \frac{di_L}{dV},\quad \text{i.e.}\quad g(V) > \frac{P}{V^{2}}\ \text{for a constant-power load}
+\label{eq:11}
+\end{equation}
+
+For a resistive load d$i_L$/dV = 1/R > 0, so the load is stabilising everywhere. For a constant-power load the link is stable only where the array conductance $g(V)$ is larger than $P/V^{2}$. On the array of (\ref{eq:7}) this is the case only above the knee. \textbf{At and below the maximum-power voltage $V_{\mathrm{mp}}$ there is no stable operating point}, and the operating point runs away.
+
+The tracker of Section~II is designed to keep the operating point away from this region on a clear day. Its perturb-and-observe step is taken upward only while the measured slope of the power-voltage curve satisfies
+
+\begin{equation}
+\frac{dP}{dV} < L(f),\qquad L(f) = -\frac{S(f)\,c(f)\,P_{\mathrm{hp}}}{300}
+\label{eq:12}
+\end{equation}
+
+where $P_{\mathrm{hp}}$ is the motor rating in horsepower, $S(f)$ rises linearly from $S_{\min}$ = 35 at $f_{\min}$ to $S_{\max}$ = 100 at $f_{\max}$, and $c(f)$ rises from 5 to 10 over the same range. Because $L(f)$ is negative, the tracker stops climbing while the slope is still negative. In other words, it parks the operating point to the right of the knee by a margin that grows with frequency. This margin was designed for exactly this purpose, and it is what keeps the drive off the tangency of Fig.~\ref{fig:6} on a clear day. It cannot protect the drive against a cloud edge, because the edge moves the knee faster than the tracker can re-judge, which takes one verdict of 0.8~s. This is why the droop is needed. A load with $P \propto V^{2}$ would have d$i_L$/dV = +$P/V^{2}$ and would settle at a new point past the knee. This is the property that the V/f drive has in steady state and, as shown in Section~III, does not have during the collapse. Fig.~\ref{fig:6} shows the three load lines through the 14.2~kW operating point, drawn over the measured operating points of the array together with the model of (\ref{eq:7}). The constant-power line touches the array curve near the knee and does not cross it.
+
+\textbf{Time scales, measured.} The frozen ring of shot B13 (2026-09-14 11:04, droop disabled, per-interrupt bus sample at 1.6~ms; Fig.~\ref{fig:7}) recorded the collapse directly. The bus fell from 475 to 250~V in 190~ms, and the first 90~V were lost in 51~ms (1.8 kV/s). During this time the torque current stayed at 43--46~A and the current-tracking error stayed flat until the last 10~ms. The drive tripped at 201~V. If the current deficit $\Delta I_{\mathrm{def}}$ between load and array is taken as constant, (\ref{eq:6}) gives the time for a voltage fall $\Delta V$ as
+
+\begin{figure}[!t]\centering
+\includegraphics[width=\columnwidth]{../paper_figs/fig13_B13_isr_rate_collapse.png}
+\caption{B13, droop off: the collapse at 1.6~ms --- the per-interrupt bus voltage, $i_q$ and the current-tracking error to the undervoltage trip.}\label{fig:7}
+\end{figure}
+
+
+\begin{equation}
+\Delta t \approx \frac{C\,\Delta V}{\Delta I_{\mathrm{def}}}
+\label{eq:13}
+\end{equation}
+
+With the full 24~A of the bank taken as the deficit, (\ref{eq:13}) gives 14~ms for the 225~V fall, which is more than ten times faster than what was measured. Inverting (\ref{eq:13}) with the measured 190~ms gives $\Delta I_{\mathrm{def}}$ $\approx$ 1.5~mF $\times$ 225~V / 0.19~s $\approx$ 1.8~A. The reason for the small value is that the bank's own current falls as $V^{2}$, and the array current rises below the knee, so the net current deficit through most of the fall is only 2--3~A. The measured 0.2~s is the time scale that the design must address. It is a quarter of one tracker verdict (0.8~s). In that time the tracker's cloud retreat moves the frequency by 0.4~Hz. The bus-voltage ceiling of the V/f firmware acts once per 101~ms slot on a set-point that is then followed at 2.5~Hz/s, so it moves the frequency by 0.5~Hz. Neither rate is anywhere near what is needed. A remedy that works must act inside the control interrupt and use the instantaneous bus voltage.
+
+\textbf{The type of trip depends on how deep the collapse goes.} At 46~Hz and 30~A, a 60~V drop of the bus removes the voltage margin of the inverter. The current loop can then lose control of the current, and the drive trips on overcurrent (dq tracking error) while the bus is still at about 410~V. This happened in seven of the ten droop-off trials (Fig.~\ref{fig:8}(a)). The mechanism is visible in the stator-voltage margin (Fig.~\ref{fig:9}): at the operating point of the test days the voltage demand already sits on the limit set by the bus, so any fall of the bus removes the loop's authority at once; with the droop the torque current is cut and 80 to 100~V of margin return within one telemetry sample, without it the demand crosses the limit as the bus falls and the overcurrent protection acts. In the other three, and in every V/f trial, the bus reached the 200~V undervoltage limit first. Both are the same instability at different depths. The undervoltage protection is the limit that one expects to see, and the FOC drive usually reached the overcurrent limit before it.
+
+\begin{figure*}[!t]\centering
+\includegraphics[width=0.82\textwidth]{../paper_figs/fig_ab_B3_A6.png}
+\caption{The combined disturbance with and without the droop, 2026-09-10, 80~ms records. (a) shot B3, droop off: the bus falls 471 $\rightarrow$ 410~V in 0.4~s with the drive current unchanged at 30~A and $k = 1$; the current loop loses authority and the drive trips on overcurrent with the bus at 411~V; (b) shot A6, droop on, same disturbance: the string leaves at t = 0, the bank lands 0.4~s later; k falls 0.98 $\rightarrow$ 0.40 within one 80~ms sample, the current 29.5 $\rightarrow$ 14.1~A, and the drive settles at 331~V for the 90~s. No trip.}\label{fig:8}
+\end{figure*}
+
+
+\begin{figure}[!t]\centering
+\includegraphics[width=\columnwidth]{../paper_figs/fig_vmargin.png}
+\caption{Stator-voltage margin through the combined disturbance, 2026-09-10, from the 3~s telemetry (the capture ring did not record the voltage demand). Top: the voltage demand of the current loops against the limit the bus allows; bottom: the torque current. Left, shot A6 with the droop on: the demand is on the limit before the edge, the droop cuts $i_q$ from 43 to 19~A within one sample and the demand falls well below the limit. Right, shot B3$^{\prime}$ with the droop off: the demand exceeds the limit as the bus falls and the drive trips on overcurrent 6~s after the edge.}\label{fig:9}
+\end{figure}
+
+
+\section{Field Evidence (Uncontrolled)}
+
+This section describes three events that occurred during normal operation, on the same machine and the same array, before the controlled tests. They are three forms of the same mechanism.
+
+\textbf{A. Cloud edge, 2026-09-05 14:59 (slow telemetry at 16.5~s; Fig.~\ref{fig:10}).} This event was recorded with the FOC firmware before the droop existed; the droop was designed after it, so the record shows the unprotected drive. The bus fell from 475~V to the 200~V trip level on a cloud edge. The trip, the pre-start check and the ramp took 165~s in total, and during that time about 324~Wh and 1.5~m$^{3}$ of water were not delivered. In the nine minutes before the trip, the power fell from 14.1 to 12.0~kW while the bus stayed at 472--475~V and the tracker backed off. This is the array losing current, not the drive losing demand. The fall itself happened between two samples. The record shows 475~V and 12~kW, and then $V_{\mathrm{oc}}$ at zero power. This event is the reason the capture ring of Section~II was built.
+
+\begin{figure}[!t]\centering
+\includegraphics[width=\columnwidth]{../paper_figs/fig03_cloud_edge_20260905.png}
+\caption{Cloud edge 2026-09-05 14:59, slow telemetry at 16.5~s, recorded with the FOC firmware before the droop existed: lead-in, trip, restart and the 165~s of lost delivery. The fall to 200~V lies between two samples and the bus reads $V_{\mathrm{oc}}$ after the trip. This is the unprotected drive.}\label{fig:10}
+\end{figure}
+
+
+\textbf{B. Dawn start, 2026-09-07 (80~ms record; the remedy is shown in Fig.~\ref{fig:11}).} There were ten start attempts between 05:43 and 06:40. A successful I-f start holds the bus at 0.98--0.99 $V_{\mathrm{oc}}$. Every failed attempt began to run away from 0.90 $V_{\mathrm{oc}}$ or above, and it could not be saved once the bus reached 0.82 $V_{\mathrm{oc}}$. The fixed magnetising current of 21.6~A represents about 750~W, and the array could not supply that before about 06:35. This is the same problem in the start sequence. A constant current is demanded whatever the voltage is, whereas a V/f start would simply run at a low voltage. The remedy is described in Section~VII.
+
+\begin{figure}[!t]\centering
+\includegraphics[width=\columnwidth]{../paper_figs/fig04_dawn_probes.png}
+\caption{Dawn 2026-09-08 with the start probe: ten start attempts, each aborted cleanly by the probe when the bus fell below 0.88 $V_{\mathrm{oc}}$, with no fault and no latched trip; the tenth held when the array reached about 950~W. On 2026-09-07, without the probe, the same dawn produced ten faults and one lost hour. The probe converts a fault into a clean retry.}\label{fig:11}
+\end{figure}
+
+
+\textbf{C. Limit cycle near the maximum power point, 2026-09-08 06:53--06:58 (80~ms record; Fig.~\ref{fig:12}).} A limit cycle here means the following repeated sequence: the tracker climbs into the current limit of the array, the bus collapses, the droop catches it, the bus recovers, and the tracker climbs again, every 26~s. Eleven such collapses occurred under a clear sky. In each cycle the tracker climbed by 0.2~Hz per verdict. The DC current rose from 4.9 to 7.0~A in ten seconds and reached the short-circuit current of the array, which was about 7~A at that time of day. The bus then collapsed from 488 to 300~V in 0.5~s. The droop, which was already installed by then, caught it at $k = 0.21$, the bus returned to $V_{\mathrm{oc}}$, and the droop released in 1.5~s. After that the tracker climbed straight back and the cycle repeated. No water was lost and there was no trip, but the drive ran about 15\% below the maximum power point for five minutes. The droop had hidden from the tracker the fact that it had reached the limit of the array. The remedy is described in Section~VII.
+
+\begin{figure}[!t]\centering
+\includegraphics[width=\columnwidth]{../paper_figs/fig05_limit_cycle.png}
+\caption{Limit cycle near the maximum power point, 2026-09-08 06:53--06:58: the tracker climbs into the current limit of the array, the bus collapses, the droop catches it, the bus recovers and the tracker climbs again, every 26~s, eleven times. About 15\% of the available power was lost for five minutes on a clear morning.}\label{fig:12}
+\end{figure}
+
+
+\textbf{D. Natural clouds, 2026-09-07 and 2026-09-11 (80~ms record; Fig.~\ref{fig:13}).} On 2026-09-07 the droop factor k was 1.0 whenever the bus had headroom; every dip of k was one cloud, and the depth of the dip was the torque the droop took away. With the droop set to HI = 0.80 $V_{\mathrm{oc}}$, the day gave seventeen cloud episodes, seven of them deep (k 0.29--0.33, bus 313--318~V), and no closed-loop trip. The single trip of that day (07:01) happened while HI was still 0.66. The droop line was then below the voltage at which the collapse began, and this event fixed the design value, which was set to 0.80 at 07:35. 2026-09-11 was a day of broken cloud. It gave 22 episodes with $k < 0.9$, nine of them with k below 0.5, the deepest at $k = 0.23$ and 304~V (13:10), with no trip and no restart caused by a cloud. Fig.~\ref{fig:13} shows this whole day: the array power, the DC-link voltage with every droop engagement, the rotor speed and the flow, with the controlled shots of that morning marked on the same axis. In total the drive rode through forty-five natural episodes. The complete records of these days (2026-09-07, 2026-09-10, 2026-09-11 and 2026-09-14), every telemetry register at 3~s with the shots and the droop engagements marked, can be inspected on the interactive record at \url{https://cloud-edge-witness.web.app}.
+
+\begin{figure*}[!t]\centering
+\includegraphics[width=\textwidth]{../paper_figs/fig16_cloudy_day_20260911.png}
+\caption{The broken-cloud day 2026-09-11 as a whole. Top: array power. Bottom: DC-link voltage with the droop lines HI (0.80 $V_{\mathrm{oc}}$, 416~V) and LO (0.50 $V_{\mathrm{oc}}$, 260~V) and the 200~V undervoltage trip level marked at the right; the blue ticks along the bottom edge are the natural cloud engagements of the droop, one per 80~ms ring window with $k < 0.9$, tick height proportional to 1 $-$ $k_{\min}$ (32 windows, deepest $k = 0.23$ at 303~V at 13:10). The vertical lines with the labels above are the controlled shots of that morning, green with the droop on (no trip) and red with the droop off (trip). No natural cloud caused a trip.}\label{fig:13}
+\end{figure*}
+
+
+\section{The Voltage-Headroom Torque Droop}
+
+\textbf{Definition.} The droop factor k is computed from the instantaneous DC-link voltage V as
+
+\begin{equation}
+k = \operatorname{clamp}\!\left(\frac{V - \mathrm{LO}\,V_{\mathrm{oc}}}{(\mathrm{HI}-\mathrm{LO})\,V_{\mathrm{oc}}},\, k_{\min},\, 1\right)
+\label{eq:14}
+\end{equation}
+
+where HI and LO are fractions of the bus voltage captured when the drive is energised, which on a PV array is $V_{\mathrm{oc}}$, and $k_{\min}$ is a floor. Headroom here means the margin between the bus voltage and the level at which the drive can no longer operate. The values used are HI = 0.80, LO = 0.50 and $k_{\min}$ = 0.10, so that on the test days the droop band was 416~V to 260~V. The factor is filtered asymmetrically, with a fast attack and a slow release,
+
+\begin{equation}
+\frac{dk_f}{dt} = \frac{k - k_f}{\tau},\qquad \tau = \begin{cases} \tau_a = 2~\mathrm{ms}, & k < k_f\\ \tau_r = 300~\mathrm{ms}, & \text{otherwise}\end{cases}
+\label{eq:15}
+\end{equation}
+
+and the filtered factor scales the torque-current limit of (\ref{eq:4}),
+
+\begin{equation}
+i_{q,\mathrm{cap}} \leftarrow k_f\, i_{q,\mathrm{cap}}
+\label{eq:16}
+\end{equation}
+
+(\ref{eq:14})--(\ref{eq:16}) are evaluated every 200~$\mu$s from the per-interrupt bus sample, not from the 80~ms RMS value used by the tracker and the undervoltage protection. The fast attack lets the droop catch the collapse. The slow release lets it hand control back to the tracker without the two contending.
+
+\textbf{What the droop does to the load characteristic.} With the droop engaged and the flux held constant, the torque and therefore the power of the drive follow k. Inside the band LO$\cdot$$V_{\mathrm{oc}}$ < V < HI$\cdot$$V_{\mathrm{oc}}$ the load power is $P_L$(V) = $k(V)$$\cdot$$P_0$, where $P_0$ is the power the drive was drawing when the collapse began. Writing the band limits as voltages, $V_{\mathrm{LO}}$ = LO$\cdot$$V_{\mathrm{oc}}$ and $V_{\mathrm{HI}}$ = HI$\cdot$$V_{\mathrm{oc}}$, the load current and its slope become
+
+\begin{equation}
+\begin{aligned} i_L &= \frac{k(V)\,P_0}{V} = \frac{P_0\,(V - V_{\mathrm{LO}})}{(V_{\mathrm{HI}} - V_{\mathrm{LO}})\,V},\\ \frac{di_L}{dV} &= \frac{P_0\,V_{\mathrm{LO}}}{(V_{\mathrm{HI}} - V_{\mathrm{LO}})\,V^{2}} > 0 \end{aligned}
+\label{eq:17}
+\end{equation}
+
+Inside the band the drive therefore has a positive incremental conductance. The droop turns the constant-power load of (\ref{eq:9}) into an effectively resistive one, and the stability (\ref{eq:11}) is satisfied at every voltage in the band, whatever the slope of the array. For the values in service, $P_0$ = 14.2~kW, $V_{\mathrm{LO}}$ = 260~V, $V_{\mathrm{HI}}$ = 416~V and $V = 330$ V, (\ref{eq:17}) gives about +0.22~A/V, against $-$0.13~A/V for the undrooped constant-power load of (\ref{eq:9}) at the same point. This is the reason the drive can settle at 325--331~V in shots A6 and A12 (Section~X) instead of running away to the trip.
+
+\textbf{Existence and uniqueness of the post-collapse operating point.} The result can be made precise with the array equation. The single-diode current $i_{\mathrm{pv}}$(V) of (\ref{eq:7}) is strictly decreasing in V for V > 0, since its derivative is $-$($I_{\mathrm{sc}}$ $\cdot$ $C_1$/($C_2$ $\cdot$ $V_{\mathrm{oc}}$)) $\cdot$ exp(V/($C_2$ $\cdot$ $V_{\mathrm{oc}}$)) < 0, and the load current $i_L$(V) = $k(V)$ $\cdot$ $P_0$/V of (\ref{eq:17}) is strictly increasing inside the band $V_{\mathrm{LO}}$ < V < $V_{\mathrm{HI}}$. The function $h(V)$ = $i_{\mathrm{pv}}$(V) $-$ $i_L$(V) is therefore strictly decreasing on the band, so it has at most one zero there. It has exactly one if it changes sign across the band, that is, if
+
+\begin{equation}
+\begin{aligned} h(V_{\mathrm{LO}}) > 0:&\quad \frac{k_{\min}\,P_0}{V_{\mathrm{LO}}} < i_{\mathrm{pv}}(V_{\mathrm{LO}}),\\ h(V_{\mathrm{HI}}) < 0:&\quad \frac{P_0}{V_{\mathrm{HI}}} > i_{\mathrm{pv}}(V_{\mathrm{HI}}) \end{aligned}
+\label{eq:18}
+\end{equation}
+
+The first inequality says that the floor load at the low line must be below the array current there. With the values in service, $k_{\min}$ = 0.10, $P_0$ = 14.2~kW and $V_{\mathrm{LO}}$ = 260~V, the floor load is 5.5~A against 22.7~A even for the reduced two-string array. The second inequality is exactly the disturbance case, namely that the array cannot supply $P_0$ at the high line: $P_0$/$V_{\mathrm{HI}}$ = 34~A at 416~V against the 22.7~A of the reduced array. The unique operating point is stable, because the linearised condition $g(V)$ + d$i_L$/dV > 0 holds with both terms positive. Without the droop, h is strictly decreasing only where $g(V)$ > $P_0$/$V^{2}$, which fails to the left of the knee; this is the same statement as (\ref{eq:11}).
+
+\textbf{Design rule.} The settings must satisfy
+
+\begin{equation}
+V_{\mathrm{uv,trip}} < \mathrm{LO}\,V_{\mathrm{oc}} < \mathrm{HI}\,V_{\mathrm{oc}} < V_{\mathrm{hold,MPPT}} < V_{\mathrm{run,normal}}
+\label{eq:19}
+\end{equation}
+
+In words, the droop must act before the tracker's hold line, and it must never limit the drive on a normal day. The normal running voltage on this array is 0.88--0.92 $V_{\mathrm{oc}}$. With LO below the tracker's back-off line, the tracker cannot work against the droop. The reference $V_{\mathrm{oc}}$ is captured at every energising, not only once: every restart after a trip or a linger stop re-captures it, and at dawn on 2026-09-08 it followed the rising sun from 494 to 527~V across the ten probes. Between captures the reference can drift with the cell temperature and the irradiance. With the module's open-circuit-voltage temperature coefficient of about $-$0.25\%/K (manufacturer data for the LONGi Hi-MO 7 class), a 20~K rise of cell temperature moves $V_{\mathrm{oc}}$ by about 5\%, and an irradiance change from 200 to 1000~W/m$^{2}$ moves it by roughly 4\% because of the logarithmic dependence. The margin of the design rule between the running ratio (0.88--0.92 $V_{\mathrm{oc}}$) and HI (0.80) is 8--12\%, so the droop lines stay below the operating point through the drift of a day. The floor $k_{\min}$ = 0.10 keeps the rotor turning, so that the sensorless observer never sees the machine at standstill. This matters on this drive because an overcurrent trip latches and needs a reset, whereas an undervoltage trip restarts by itself. The droop is controlled by a compile-time switch and two live settings, so the same firmware can be run with and without it for the comparison.
+
+\textbf{Sensitivity to the settings (2026-09-14, same disturbance, $\sim$14.2~kW array).} Three pairs of (HI, LO) were tested against the combined disturbance. All three rode it through. The settings determine the voltage at which the bus is held, not whether the drive survives. With (0.70, 0.45) the bus was held at about 303~V with $k_{\min}$ = 0.531, and the torque current was cut from 42.8 to 21.3~A. With (0.80, 0.50) the bus was held at about 325~V with $k_{\min}$ = 0.415, and the current was cut from 40.0 to 15.8~A. With (0.90, 0.60) the bus was held at about 377~V with $k_{\min}$ = 0.418, and the current was cut from 43.8 to 16.0~A. HI = 0.90 did not engage at rest on that clear day (running ratio 0.915 $V_{\mathrm{oc}}$), but the margin to the upper bound of the design rule is only about 2\% of $V_{\mathrm{oc}}$. This is why 0.80 is the value in service.
+
+\textbf{What the observer sees (Fig.~\ref{fig:14}).} In shot A12 (2026-09-14 10:46, ring on $\hat{\omega}_m$, $i_q$ and k at 40~ms), k fell from 1.000 to 0.869 and then to 0.425 in about 120~ms. $i_q$ fell from 40 to 15.8~A in under 250~ms. The estimated rotor speed fell smoothly from 46.4 to 29.6~Hz, and the observer did not lose track of the rotor at any point. The droop reduces the torque current and leaves the flux alone, so the machine stays magnetised and the observer keeps working.
+
+\begin{figure}[!t]\centering
+\includegraphics[width=\columnwidth]{../paper_figs/fig12_A12_observer_through_shed.png}
+\caption{A12, droop on: the observer through a shed --- $\hat{\omega}_m$, $i_q$ and k at 40~ms.}\label{fig:14}
+\end{figure}
+
+
+\textbf{Bench test.} On a stiff battery bus, with HI set above 1.0 so that the droop was always active, the measured k followed (\ref{eq:14}) to three decimal places over a range of forced operating points.
+
+\textbf{Cost.} The droop is one multiplication per interrupt, and it moves no register. On clear days k stays at 1.000 all day (2026-09-10, 10:40--16:50, no natural engagement).
+
+\textbf{What it does not do.} The droop restores a stable operating point. It does not create power. Below the cut-in speed of the pump there is no useful operating point, and the machine turns without pumping. The start and stop logic of Section~VII handles that case.
+
+\section{Two Interactions and Their Closure}
+
+The droop changes what the tracker sees, and the constant-current start has the same weakness as the constant-power run. Four small rules resolve these problems. All four are in the firmware in service, and all four were measured.
+
+\textbf{A. Start probe.} During the pre-start check and the I-f ramp, if the bus falls below 0.88 times the voltage captured at energising for 20~ms, the bridge is switched off cleanly. There is no fault and no back-off ladder, the ring is not frozen, and a retry is scheduled in 90~s. At dawn on 2026-09-08 (Fig.~\ref{fig:11}) there were nine such probes between 05:53 and 06:16. Each ended within about 1~s at 440--465~V and none caused a fault. The tenth attempt held at 06:18:07, once the array could supply about 950~W. $V_{\mathrm{oc}}$, re-sampled at every energising, followed the rising sun from 494 to 527~V. At dawn on 2026-09-11 (cloud) there were eleven probes before the drive held at 06:17. For comparison, 2026-09-07 produced ten faults and one lost hour.
+
+\textbf{B. Linger stop.} This rule applies when the drive is in closed loop below 24~Hz rotor frequency, so that no water is delivered. If the set-point has fallen by at least 1~Hz and stays down for 2~min within a 4~min window, or if it has been flat for 8~min, the drive stops cleanly and retries after 90, 270 and 540~s. At dusk on 2026-09-10 this gave three clean stops, followed by thirty probes at 90~s intervals until dark, with no fault. On 2026-09-07, before this rule existed, the drive spent 17~min below cut-in, tripped on undervoltage and then stalled through 14~min of start attempts. The 2~min persistence condition was added after a dawn cloud on 2026-09-11 pulled the set-point from 21.7 to 15.3~Hz within a minute, on a window that was already 4~min old, and stopped the drive for a passing cloud. With the condition in place, dusk on 2026-09-11 gave two clean stops and one undervoltage before the probes took over.
+
+\textbf{C. Droop ceiling.} When the droop engages ($k < 0.90$), the set-point is capped at the speed of the first engagement minus a back-off that doubles on every re-engagement (0.4 to 3.2~Hz). The cap relaxes at 0.2~Hz per 3~s while $k = 1$, at 0.2~Hz per 15~s while the droop is active, and it is removed after two clean minutes. This rule was added because on 2026-09-08 the drive repeated the limit cycle of Section~V-C eleven times in five minutes. With the rule, dawn on 2026-09-11 gave one collapse (k 0.20) and no repetition. The first version of the rule re-based the cap on the collapsed speed at each re-engagement, which left the drive at 12~Hz after a 90~s disturbance (shot A9). Re-basing it on the speed at the first engagement fixed this the same morning (A10: 31.7 to 46.4~Hz in 80~s after release). This cap is also the reason why the FOC drive is the slowest of the surviving drives to return to full speed (Section~X-B). It relaxes slowly by design.
+
+\textbf{D. Sag-line re-judge.} With a lasting deficit, for example a step load, partial shading or a fouled string, the cloud path of the tracker parked the set-point at exactly 0.95 times the last judged bus voltage (449, 451, 450 and 453~V in four shots on 2026-09-10). This happened because the cloud path retreats below that line, returns above it, and re-judges only in the perturb-and-observe branch, which it never reaches. The tracker and the cloud path together were regulating the bus voltage instead of tracking the power, and about 2~kW out of 12 were lost in shot A3. The rule now drops the reference after 30~s at the line, so that perturb-and-observe starts again from where the drive is. It was put into service on 2026-09-11, and the same load-then-string sequence left the line within 45~s.
+
+\section{The Frequency-Space Counterpart for V/f}
+
+If the mechanism is as described in Sections III and IV, a V/f drive should also be protected by the same kind of droop, applied to the quantity that V/f controls, which is the stator frequency. To test this, and to give the V/f baseline the best possible chance, a bus-headroom frequency retreat was added to the V/f interrupt. It is the frequency-space version of (\ref{eq:14}), tested on the same drive on the same day:
+
+\begin{equation}
+d = \operatorname{clamp}\!\left(\frac{\mathrm{HI}\,V_{\mathrm{oc}} - V}{(\mathrm{HI}-\mathrm{LO})\,V_{\mathrm{oc}}},\,0,\,1\right),\qquad f \leftarrow f - d\,R\,T_s
+\label{eq:20}
+\end{equation}
+
+It is evaluated every 200~$\mu$s from the same per-interrupt bus sample V. $V_{\mathrm{oc}}$ is the bus voltage captured at start, as in Section~VI. HI = 0.80 and LO = 0.50 as before. $R = 2000$ Hz/s is the retreat rate at full deficit, and $T_s$ = 200~$\mu$s is the interrupt period. The set-point of the tracker is pulled down together with the frequency, so that the 2.5~Hz/s ramp cannot pull the frequency straight back up. Recovery is left to the tracker, as before. The baseline law keeps its slot-rate ceiling (\ref{eq:3}). The retreat is the same rule, moved from the 101~ms slot to the interrupt and from the 80~ms RMS value to the instantaneous bus. Its effect on the load characteristic is the frequency-space equivalent of (\ref{eq:17}). While the retreat is engaged, the stator frequency and therefore the pump power fall with the bus voltage, so that
+
+\begin{equation}
+\frac{dP_L}{dV} > 0\ \Rightarrow\ \frac{di_L}{dV} = \frac{1}{V}\frac{dP_L}{dV} - \frac{P_L}{V^{2}} > 0
+\label{eq:21}
+\end{equation}
+
+and the same positive-slope argument that makes (\ref{eq:11}) hold inside the droop band applies here. Nothing else in the V/f firmware was changed. At $R = 2000$ Hz/s the retreat can take the stator from 48 to 20~Hz in 14~ms, which is as fast as a V/f law can physically act. Smaller values of R were not tested on the array.
+
+The retreat by itself is not new. Commercial PV pump inverters regulate the bus with a frequency loop of this kind. Built into the same drive, however, it answers a question that any paper about a droop has to face, namely whether the benefit comes from the droop or from the control law it was built into. Section~X gives the answer. The droop, in either form, is what prevents the trip. The control law decides the state in which the drive is left afterwards.
+
+\section{Validation Method: Attack and Sufficiency}
+
+One kind of disturbance is not enough to validate a stabiliser of this kind. Two different tests are needed.
+
+\textbf{Resistive step (attack path).} A switched DC resistor bank, graded by breakers, gives steps of 2.8 / 5.1 / 7.9 / 10.4~kW, measured with a clamp meter at 440--455~V (about 75 $\Omega$ per bank when hot). The edge of the step is about 1~ms, faster than any cloud, so it tests the reaction speed of the droop with margin. A resistor has one limitation as a test load. Its power falls as $V^{2}$, so at the bottom of the collapse it has faded to a fraction of its nominal value, and in (\ref{eq:10}) and (\ref{eq:11}) it is a stabilising load. The bank therefore has to be sized for the deficit that is wanted at the floor of the collapse.
+
+\textbf{String removal (sufficiency).} Opening one string isolator removes one of the three strings, which is one third of the short-circuit current, and leaves $V_{\mathrm{oc}}$ almost unchanged. Physically this is what a cloud does. Unlike the resistor, this deficit does not fade as the bus falls. This test therefore checks whether an operating point still exists after the droop has acted.
+
+\textbf{The combination is the decisive test.} On a 14~kW array, neither disturbance alone caused a trip with the droop disabled. In shot B2 of Section~X, the 10.4~kW step alone bottomed at 323~V and the drive survived on the retreat of the tracker. The combination caused a trip in every trial. The two-part matrix (Table~\ref{tab:2}) is a result in itself. Passing one test does not imply passing the other.
+
+\textbf{Severity relative to a real cloud.} The controlled disturbance is harsher than any cloud this array can see, and the margin can be stated in numbers. The string isolator removes one third of the array current in about one millisecond, the operating time of a relay contact. A cloud edge, by contrast, crosses the array at wind speed; measured irradiance ramps at plant scale take seconds \cite{r24}, and their rate depends on the cloud speed \cite{r25}. As an order-of-magnitude estimate rather than a measurement, an edge moving at 2--6~m/s takes roughly 5--20~s to cross a 36-module array of about 30~m, so the natural loss of current is spread over seconds, not milliseconds. The resistor bank adds a further step of up to 10.4~kW with an edge of about 1~ms, and in the combination the deficit does not fade as the bus falls. This combination reached a trip in every droop-off trial, whereas the natural cloud edges of 2026-09-07 and 2026-09-11, 45 episodes with k down to 0.23, never caused a trip with the droop fitted (Section~V-D). A droop that survives the relay-switched combination therefore survives any cloud edge this array can see.
+
+\textbf{Apparatus (Fig.~\ref{fig:15}).} A four-channel ESP32 relay box at the array is commanded over the LAN, with about 100~ms round trip and an MQTT fallback. Every command is time-stamped against the drive record. The string isolator is on a normally-closed contact, so a failure of the box returns the string. Fig.~\ref{fig:15}(a) shows the physical layout, with the array and the isolator, the graded bank connected to the DC bus through relay R1 with the clamp meter, the inverter cabinet, the 70~m borehole and the flow meter on the RS485 bus of the drive. The photographs in Fig.~\ref{fig:15}(b)--(d) show the installed apparatus: the array with the relay box and the air-cooled resistor bank beside it, the relay box interior, and the inverter. The flow meter is clamped on the delivery pipe, and the water goes to the sprinkler-irrigated alfalfa field. An unattended script runs each pair of shots, first with the droop on and then with it off. It resets and restarts the drive after a trip through the link of the logging tool, and it always restores the droop and opens the relays before it exits. The sequence used for every arm on 2026-09-14 was string out, 7.9~kW bank closed 0.4~s later, 90~s hold, bank off, string back at +97~s. This is the same sequence as A10/B10 of 2026-09-11.
+
+\begin{figure*}[!t]\centering
+\includegraphics[width=0.8\textwidth]{../paper_figs/fig16_setup_composite.png}
+\caption{Experimental setup: (a) schematic of the array, string isolator, resistor bank, relay box, inverter, borehole and flow meter; (b) the array with the relay box and the resistor bank beside it; (c) relay-box interior; (d) the 22~kW IGBT inverter.}\label{fig:15}
+\end{figure*}
+
+
+\textbf{Naming of the shots.} Shots labelled A were run with the droop enabled and shots labelled B with it disabled. The numbers give the order within a day, and primes ($^{\prime}$, $^{\prime\prime}$) mark repeats of the same disturbance later on the same day. Shots labelled S ran on the baseline V/f controller, and shots labelled R on the V/f firmware with the retreat. L1 is a long load-then-string sequence.
+
+\textbf{Firmware changes between arms.} The shots of the four days ran on three revisions of the FOC firmware (Table~\ref{tab:1}, column "fw"). Each revision changed only the tracker interactions of Section~VII; the droop of Section~VI was unchanged throughout. Every shot on 2026-09-14 (E1, the line sensitivity, and both V/f arms) ran on the last revision (r3) and on two V/f builds that differ only by (\ref{eq:20}). The drive was switched between firmwares over the RS485 link. The tune, the nameplate and the calibration are stored in EEPROM, and they were verified to be identical before and after each switch.
+
+\section{Results}
+
+Before every FOC shot on 2026-09-10 the steady state was 46.5~Hz stator, 43~Hz rotor, 472~V, 30~A, 14.2~kW and 53~m$^{3}$/h, with $V_{\mathrm{oc}}$ = 519.5~V and the droop lines at 416 / 260~V. Table~\ref{tab:1} lists every shot. The traces are in Figs.~\ref{fig:4}, \ref{fig:5}, \ref{fig:7}, \ref{fig:8} and 14.
+
+\begin{table*}[!t]\caption{Every FOC shot. ($k_{\min}$ = lowest droop factor; "parked" = the sag-line lock of Section~VII-D before its fix; fw = firmware revision: r1 droop with start probe and linger stop, r2 adds the droop ceiling, r3 adds the ceiling re-basing and the sag-line re-judge)}\label{tab:1}\centering\scriptsize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{0.9}
+\begin{tabularx}{\textwidth}{llXXXXXX}\toprule
+shot & fw & disturbance & droop & bus min & $k_{\min}$ & tracker & outcome \\
+\midrule
+A1 & r1 & 2.8~kW & on & 454~V & 1.00 & 46.5 $\rightarrow$ 45.8 & headroom step \\
+A2 ($\times$2) & r1 & 5.1~kW & on & 435~V & 1.00 & sag retreat to 43.3, return & DC current unchanged through the edge (Fig.~\ref{fig:4}(a)) \\
+A3 & r1 & 7.9~kW & on & $\sim$405~V & 0.93 & 46.4 $\rightarrow$ 40.3, parked 41~Hz & first droop engagement \\
+A4 / B1 & r1 & string out & on / off & 446--449~V & --- & 46.8 $\rightarrow$ 42.5, parked & identical either way: $-$18\% power \\
+A5 & r1 & 10.4~kW & on & 384~V & 0.79 & 46.6 $\rightarrow$ 36.3, parked 37.7 & droop held 390--400~V for 2.5~s (Fig.~\ref{fig:4}(b)) \\
+B2 & r1 & 10.4~kW & \textbf{off} & 323~V & --- & 46.7 $\rightarrow$ 33.7 in 3~s & survived on the tracker alone, 60~V deeper \\
+\textbf{B3} & r1 & \textbf{string + 10.4~kW} & \textbf{off} & 410~V at trip & --- & --- & \textbf{OC trip (dq tracking) 0.4~s after the edge} (Fig.~\ref{fig:8}(a)); latched; 3.5~min to recover \\
+\textbf{A6} & r1 & \textbf{string + 10.4~kW} & \textbf{on} & \textbf{325~V} & \textbf{0.40} & 46.6 $\rightarrow$ 23~Hz, parked 453~V & \textbf{no trip}: 29.5 $\rightarrow$ 14.1~A in one sample, stable at 331~V for 90~s, at speed 20~s after release (Fig.~\ref{fig:8}(b)) \\
+A2$^{\prime}$, A3$^{\prime}$ & r1 & string + 10.4~kW & on & --- & --- & ended 43.1 / 32.8~Hz & no trip ($\times$2) \\
+B2$^{\prime}$, B3$^{\prime}$ & r1 & string + 10.4~kW & off & --- & --- & --- & OC trip at +6~s / +3~s ($\times$2), auto-recovered \\
+A7 & r1 & load 240~s; string out +60~s, in +120~s & on & 324~V & 0.42 & 37.5 $\rightarrow$ 24.3 $\rightarrow$ 37.5~Hz & no trip; return to the sag line in 10~s \\
+B7 & r1 & same & off & --- & --- & --- & \textbf{UV trip 6~s after the string pull}; auto-restart with load on \\
+A4$^{\prime\prime}$ / B4$^{\prime\prime}$ (14:24, 14:31) & r1 & string + 7.9~kW & on / off & 289~V / --- & 0.36 / --- & 46.6 $\rightarrow$ 40.6 / --- & no trip / \textbf{UV trip at +6~s} \\
+A5$^{\prime\prime}$ / B5$^{\prime\prime}$ (15:34, 15:41; array $\sim$10~kW) & r1 & string + 5.1~kW & on / off & 277~V / --- & 0.24 / --- & 40.5 $\rightarrow$ 34.4 / --- & no trip / \textbf{OC trip at +6~s} \\
+09-11 A7 / B7 (07:54, 08:01; array 6.8~kW) & r2 & string + 2.8~kW & on / off & 396~V / --- & 0.45 / --- & 35.7 $\rightarrow$ 23 / --- & no trip / \textbf{OC trip at +9~s} \\
+09-11 A8 / B8 (08:17, 08:24; 8.9~kW) & r2 & string + 5.1~kW & on / off & 302~V / --- & 0.17 / --- & 38.9 $\rightarrow$ 17.4 / --- & no trip / \textbf{OC trip at +6~s} \\
+09-11 A9 (10:11; 12~kW) & r2 & string + 7.9~kW & on & 324~V & 0.27 & 42 $\rightarrow$ 12~Hz & no trip; exposed the ceiling re-basing flaw (B9 invalid: fired during a restart; discarded) \\
+09-11 A10 / B10 (10:59, 11:06; 14.3~kW) & r3 & string + 7.9~kW & on / off & 333~V / --- & 0.39 / --- & 46.5 $\rightarrow$ 31.7, back to 46.4 in 80~s / --- & no trip / \textbf{OC trip at +3~s} (trip ring captured) \\
+09-11 L1 (14:37; 14.0~kW) & r3 & load 240~s; string out +60~s, in +120~s & on & 367~V & 0.65 & left the 0.95 line in 45~s; string back $\rightarrow$ 25.5 $\rightarrow$ 36.9~Hz in 50~s & no trip; re-judge confirmed \\
+09-14 A11 / A12 (10:38, 10:46; 13.8--14.3~kW) & r3 & string + 7.9~kW & on & 443~V (3~s) / $\sim$325~V & --- / 0.415 & 46.4 $\rightarrow$ 27.5 / 29.6~Hz & no trip ($\times$2); A12 ring on $\hat{\omega}_m$ / $i_q$ / k (Fig.~\ref{fig:14}) \\
+09-14 B12 / B13 (10:55, 11:04) & r3 & string + 7.9~kW & \textbf{off} & --- / 201~V at trip & --- & --- & \textbf{UV trip at +6~s} ($\times$2); B12 ring: $i_{q,\mathrm{ref}}$ pinned at the 52.5~A cap throughout; B13 ring at 1.6~ms (Fig.~\ref{fig:7}) \\
+09-14 A14 / A15 (11:15, 11:21) & r3 & string + 7.9~kW & on, lines 0.70/0.45 and 0.90/0.60 & $\sim$303~V / $\sim$377~V & 0.531 / 0.418 & 46.4 $\rightarrow$ 30.4 / 29.5~Hz & no trip ($\times$2); line sensitivity, Section~VI \\
+\bottomrule\end{tabularx}\end{table*}
+
+
+\textbf{Score on the combined disturbance, FOC: droop on 0/12 trips, droop off 10/10} (seven overcurrents, three undervoltages), across array powers of 6.8--14.3~kW over three days, with the disturbance scaled to the available sunlight. Every droop-off trial cost a trip, a manual or scripted reset in the overcurrent cases, and 3--4~min to return to full speed. Every droop-on trial cost only a 90~s reduction of the output.
+
+\begin{table}[!t]\caption{The two-axis matrix (14~kW array, FOC)}\label{tab:2}\centering\footnotesize
+\begin{tabularx}{\columnwidth}{lXX}\toprule
+ & droop off & droop on \\
+\midrule
+resistive step alone (10.4~kW) & no trip, 323~V & no trip, 384~V, k 0.79 \\
+string removal alone & no trip, 449~V & no trip, 446~V \\
+both & \textbf{trip, every trial} & \textbf{no trip, every trial} \\
+\bottomrule\end{tabularx}\end{table}
+
+
+\textbf{Fig.~\ref{fig:4}(b) (A5 edge).} The bus fell from 474 to 384~V within one 80~ms sample. In the same sample k fell to 0.79 and the DC current fell from 30 to 25~A. The droop then held the bus at 390--400~V ($k \approx 0.83$) for 2.5~s, with 10~kW going into the drive and 10~kW into the bank, until the retreat of the tracker caught up and the bus climbed to 433~V at 3~s.
+
+\textbf{Fig.~\ref{fig:8}(a) (B3 trip ring).} The bus fell from 471~V through 438~V to 410~V in 0.4~s, while the DC current stayed at 30~A and $k = 1.$ The drive tripped on overcurrent (current-loop tracking error) at t = 0 with the bus at 411~V.
+
+\textbf{Fig.~\ref{fig:8}(b) (A6 edge).} The two disturbances arrived 0.4~s apart. The string removal took the bus from 477~V to 413--424~V, and the bank took it to 325~V. Within one sample k fell from 0.98 to 0.40 and the current from 29.5 to 14.1~A. The bus recovered to 331~V and was held there (k 0.46) for the rest of the disturbance.
+
+\textbf{Fig.~\ref{fig:7} (B13 trip ring, 1.6~ms).} This is the collapse at full resolution. The bus fell from 475 to 250~V in 190~ms, with 90~V lost in the first 51~ms. $i_q$ was held at 43--46~A throughout, the tracking error stayed flat until the last 10~ms, and the undervoltage trip came at 201~V. The time scale used in Section~IV is taken from this record.
+
+\textbf{The order of the disturbances determines the type of trip.} When the load is applied first and the string is removed afterwards, the trip is an undervoltage, because the bus is already on the sag line when the current is removed (B7). When both arrive together, the trip is an overcurrent if the current loop loses control at about 410~V first (B3, B2$^{\prime}$, B3$^{\prime}$, B5$^{\prime\prime}$, 09-11 B7/B8/B10), and an undervoltage if it does not (B4$^{\prime\prime}$, B12, B13). Both are the same instability at different depths.
+
+\subsection{The V/f arms (2026-09-14, 12:22--13:35)}
+
+These shots used the same array (13.8--14.3~kW at the maximum power point), the same sequence, the same relay box and the same drive. Before every V/f shot the steady state was 48--50~Hz stator, 450--465~V, 35--37~A and 16--17~kW, with the modulation index at 0.94. The V/f tracker settles on the modulation ceiling, and there it draws 2--3~kW more from the array than the FOC tracker does at its bus-limited point (Section~XI).
+
+\begin{table}[!t]\caption{Every V/f shot. (edge = bank closure; f = stator frequency; values from polled telemetry, one 80~ms block)}\label{tab:3}\centering\scriptsize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{0.9}
+\begin{tabularx}{\columnwidth}{llXXX}\toprule
+shot & firmware & outcome & last block before the gate & after \\
+\midrule
+S1 12:22 & baseline V/f & \textbf{UV trip} $\le$ 1.3~s & (logger blind) & restart from 0.1~Hz \\
+S2 12:32 & baseline V/f & \textbf{UV trip} 0.5~s & 461~V / 37.6~A $\rightarrow$ 214~V / 30.6~A & restart from 0.1~Hz \\
+S3 12:38 & baseline V/f & \textbf{UV trip} 0.5~s & 461~V / 36.8~A $\rightarrow$ 205~V / 29.9~A & restart from 0.1~Hz (Fig.~\ref{fig:5}a) \\
+S4 12:44 & baseline V/f & \textbf{UV trip} & --- & restart from 0.1~Hz \\
+S5 12:50 & baseline V/f & \textbf{UV trip} & --- & restart from 0.1~Hz \\
+R1 13:21 & V/f + retreat (\ref{eq:20}) & \textbf{no trip} & retreat engaged 67~ms; f 48.5 $\rightarrow$ 28.2~Hz; bus min 362~V (per-interrupt) & 29.5~Hz, 4.3~kW, 455~V for the hold (Fig.~\ref{fig:5}b) \\
+R2 13:27 & V/f + retreat & \textbf{no trip} & engaged 62~ms; f $\rightarrow$ 27.5~Hz; bus min 362~V & 29.6~Hz, 4.6~kW \\
+R3 13:32 & V/f + retreat & \textbf{no trip} & f $\rightarrow$ 27.3~Hz; bus min 362~V & 29.0~Hz, 4.3~kW \\
+\bottomrule\end{tabularx}\end{table}
+
+
+\textbf{Score on the combined disturbance, V/f: baseline 5/5 trips, with the per-interrupt retreat 0/3.} The behaviour of the baseline V/f controller is shown in Fig.~\ref{fig:5}(a) and explained in Section~III. The current stays almost the same while the bus voltage collapses. The per-interrupt diagnostics of the retreat build confirm what the polled telemetry cannot resolve. The retreat armed once per start, it was active for 62--67~ms, it took the stator frequency to 27.3--28.2~Hz, and the bus never fell below 362~V. There was no restart in any of the three shots.
+
+\subsection{All four arms on one disturbance}
+
+\begin{table*}[!t]\caption{The four arms compared. (string out + 7.9~kW, $\sim$14~kW array, 2026-09-14 unless stated; hold = the last 60~s of the 90~s bank-on period; recovery = time from the edge until the stator is back above 44~Hz, the bank having opened at +90~s and the string returned at +97~s)}\label{tab:4}\centering\scriptsize\setlength{\tabcolsep}{3pt}\renewcommand{\arraystretch}{0.9}
+\begin{tabularx}{\textwidth}{llXXXXX}\toprule
+arm & shots & trips & what acts, and where & bus minimum & during the hold & recovery \\
+\midrule
+FOC, droop off & 10 (3 days) & \textbf{10} & nothing until a protection & 201~V (UV) / $\sim$410~V (OC) & trip, auto-restart, $\sim$18~Hz, 1.7--1.9~kW, no water & 173--178~s; $\sim$2.0~m$^{3}$ lost per event \\
+FOC + VHTD (\ref{eq:14}) & 12 (3 days) & \textbf{0} & $i_q$ cap, every 200~$\mu$s & 325~V (k 0.415) & 27.5--30.4~Hz stator, 3.7--4.9~kW, 8.5--12.6~m$^{3}$/h, 440--450~V, observer locked & 153--169~s (droop ceiling relaxing, Section~VII-C) \\
+baseline V/f & 5 & \textbf{5} & set-point ceiling 0.11$\cdot$V per 101~ms slot & < 200~V (UV) & trip, auto-restart from 0.1~Hz, 31--32~Hz reached by the end of the hold, $\sim$5.4~kW & 98--102~s \\
+V/f + retreat (\ref{eq:20}) & 3 & \textbf{0} & stator f, every 200~$\mu$s & 362~V & 29.0--29.6~Hz stator, 4.3--4.9~kW, 452--455~V, no restart & 99--100~s \\
+\bottomrule\end{tabularx}\end{table*}
+
+
+Three observations follow from Table~\ref{tab:4}.
+
+\emph{Whether the drive trips depends on how fast the droop acts, not on the control law.} The two laws with a per-interrupt headroom droop survived 15 shots out of 15. The two laws without it tripped 15 times out of 15, and one of those two was the V/f drive that is usually described as self-shedding.
+
+\emph{The two surviving drives are left in different states.} VHTD reduces the torque current and keeps the flux. The machine stays magnetised, the observer never has to follow a transient that it cannot track (Fig.~\ref{fig:14}), and the drive settles at 27.5--30.4~Hz stator (26--28~Hz rotor, at or just above the 26.4~Hz cut-in) while delivering 8.5--12.6~m$^{3}$/h through the hold. The V/f retreat can only change the frequency, so it drops the stator frequency to 27.3--28.2~Hz within 70~ms and then settles at 29.0--29.6~Hz. The water delivered by the V/f arms during the holds was not metered; under V/f the flow meter was logged only in the yield blocks of Section~X-D. The two post-shed operating points are within 1~Hz and 1~kW of each other. The difference lies in how they were reached. In one case a torque reference fell in 250~ms. In the other case a 20~Hz step in stator frequency was applied to a rotor that cannot follow it.
+
+\emph{The recovery time is set by a tuning choice, not by the droop.} The V/f arms are back above 44~Hz 98--102~s after the edge, which is almost as soon as the bank opens. The FOC drive takes 153--169~s, because its droop ceiling (Section~VII-C) relaxes slowly by design, at 0.2~Hz per 3~s, to keep the tracker away from the edge it has just fallen from. That extra minute is the price of resolving the limit cycle of Section~V-C, and it could be tuned differently. The droop-off FOC drive has no such ceiling and is slower still (173--178~s), because it has to trip, wait and restart.
+
+\subsection{Water}
+
+The water cost of a trip is the volume that would have been delivered at the pre-event flow $Q_0$ but was not,
+
+\begin{equation}
+\Delta W = \int \left(Q_0 - Q(t)\right)\,dt
+\label{eq:22}
+\end{equation}
+
+integrated from the edge until the flow is back at $Q_0$. It was measured for a droop-off trip on this well with the flow meter on 2026-09-14 (shots B12 and B13). The flow, $Q_0$ = 53.2~m$^{3}$/h before the shot, stayed below 90\% for about 170~s through the trip, the automatic restart and the ramp, and (\ref{eq:22}) gives about 2.0~m$^{3}$ (1.96 and 2.00~m$^{3}$) not delivered. This is equivalent to 2.2~min of full delivery per event, and it agrees with the cloud trip of 2026-09-05 (165~s, 1.5~m$^{3}$ at the lower afternoon flow). Every droop-on trial delivered water through the hold (8.5--12.6~m$^{3}$/h) and lost none to a restart. Over the controlled-test days, on 2026-09-10 (tests from 10:40) the drive ran 4.9~h and delivered about 253~m$^{3}$, with six trips, namely all five droop-off trials plus one manual test. On 2026-09-11 (cloud, tests, droop on except for four B shots) it ran 7.9~h and delivered about 219~m$^{3}$, with four fault entries, namely three droop-off trials and one dusk undervoltage.
+
+\subsection{Specific yield, V/f against FOC}
+
+The usual reason for the migration is efficiency, and the fact that the V/f tracker draws 2--3~kW more from the array (Section~X-A) makes this question important. On 2026-09-14 the two firmwares were alternated on the same well with the flow meter logging: FOC, then V/f, then FOC again as the afternoon sun went down. The specific yield of each block is the metered volume divided by the DC energy over the block,
+
+\begin{equation}
+\eta_y = \frac{\int Q\,dt}{\int P\,dt}
+\label{eq:23}
+\end{equation}
+
+expressed in litres per watt-hour (Table~\ref{tab:5}).
+
+\begin{table}[!t]\caption{Flow-metered yield blocks, 2026-09-14. (each block $\ge$ 15~min at steady state after the ramp; stator frequency, DC power and flow are block means)}\label{tab:5}\centering\scriptsize
+\begin{tabularx}{\columnwidth}{llXXXX}\toprule
+block & law & stator & DC power & flow & specific yield \\
+\midrule
+13:40--13:58 & FOC & 46.7~Hz & 14.2~kW & 52.3~m$^{3}$/h & \textbf{3.675 L/Wh} \\
+14:06--14:21 & V/f & 46.2~Hz & 14.2~kW & 52.5~m$^{3}$/h & \textbf{3.687 L/Wh} \\
+14:21--14:36 & V/f & 45.0~Hz & 13.4~kW & 50.7~m$^{3}$/h & 3.781 L/Wh \\
+14:45--15:00 & FOC & 43.5~Hz & 12.1~kW & 47.6~m$^{3}$/h & 3.924 L/Wh \\
+15:00--15:15 & FOC & 42.0~Hz & 11.1~kW & 44.7~m$^{3}$/h & 4.012 L/Wh \\
+\bottomrule\end{tabularx}\end{table}
+
+
+At the matched operating point (46.2--46.7~Hz, 14.2~kW, both trackers at the same point) FOC gave 3.675 L/Wh and V/f gave 3.687 L/Wh, a difference of 0.3\%. The other three blocks do not separate the two laws either. All five lie on one curve. The specific yield rises as the operating point moves down toward the 36~Hz optimum of the 31-point map of Section~II (4.08--4.11 L/Wh), and the control law does not move any point off that curve. On this pump, therefore, the specific yield depends on the operating point and not on the control law, and the measurement does not support the efficiency argument for the migration. What FOC provides is the set of control quantities on which the droop can act, as discussed in Section~XI.
+
+\section{Discussion}
+
+\textbf{What the result means.} A PV-direct drive collapses because its demand does not fall with the bus voltage within the 0.2~s or so that the link allows, and the tracker cannot help with one verdict every 0.8~s. A headroom droop, evaluated at the control-loop rate from the instantaneous bus voltage, restores an operating point. For FOC it acts on the torque current, and for V/f it acts on the frequency. The description of V/f as self-shedding by nature is a steady-state description. At the modulation ceiling and on the time scale of the link, the baseline V/f controller is a constant-power load as well, and it tripped in every trial.
+
+\textbf{Why the torque domain is preferable.} Both surviving drives reach a similar operating point, but by different routes. VHTD reaches it by lowering a current reference, which the current loop follows within 250~ms, while the flux and the observer are untouched. The V/f retreat reaches it by stepping the stator frequency by 20~Hz against a rotor that cannot follow, which produces a slip transient. The machine survived this transient on this pump, but the transient is not a controlled quantity. The torque-domain droop has a floor ($k_{\min}$) that keeps the observer working, an explicit release time, and a design rule that places it relative to the lines of the tracker. The frequency-space retreat has a rate and no other design parameter. The reasons for using FOC on this plant are therefore the quantities on which the droop can act, and not the yield, for which Section~X-D measured no difference at the matched operating point. These quantities are a torque command with a floor and a release time, a current limit that limits the current instead of tripping, machine parameters measured by the auto-tune, and a start that runs at low current instead of at low voltage. Over-current protection is also of a different kind under the two laws. Under FOC the phase current is a regulated quantity, so protection acts at two levels: the current loops and the torque-current limit hold the current within its bound in every 200~$\mu$s interrupt, and the timed over-current trip (44~A for 100~ms on this drive) is only a backstop behind them. Under V/f the current is not controlled at all; the same timed trip and the instantaneous hardware trip are the only protection, so every transient that exceeds the setting ends in a trip and a restart, where FOC would have limited it. On a PV-direct drive, where the bus moves and the motor is far down the well, this is a practical reason for the migration in its own right.
+
+\textbf{Generality.} Any current-regulated drive that is supplied from a source with a knee, for example a PV array, a fuel cell, a current-limited supply rail or a weak grid behind a long line, is a constant-power load to that source, and (\ref{eq:11}) applies without change. The droop needs only the local bus voltage and the current limit (or the frequency command) that every such drive already has.
+
+\textbf{Why simulation tends to miss it.} PV is often modelled as a fixed-power source, or the DC link is modelled as ideal. Either simplification removes the coupling that produces the failure. A V/f drive modelled as $P \propto V^{2}$ misses the inertia of the rotor and the modulation ceiling. The model used here is Section~IV with the real capacitance and the measured I-V curve (Fig.~\ref{fig:6}), and Figs.~\ref{fig:4}, \ref{fig:7}, \ref{fig:8} and 14 validate it. No simulation was used in this work.
+
+\textbf{Relation to known art.} DC-link droop and CPL stabilisation are established subjects that are still actively developed \cite{r13,r14,r15,r16,r17,r18,r19,r22}, and bus-voltage frequency loops are standard in commercial PV pump inverters. What this paper adds is the measured collapse on a real plant. It also shows, by building the droop into both control laws, that the placement of the droop at the interrupt rate on the instantaneous bus is the property that matters. In addition it describes the two tracker interactions and their resolution, the sensitivity to the droop settings, and the two-part test with its measured water cost.
+
+\textbf{Why not a faster tracker.} The tracker is about a hundred times slower than the disturbance, and making it faster degrades the signal-to-noise ratio of its verdicts; the trade-off between step size and perturbation period is the classical one of \cite{r23}. That is the reason verdict averaging was introduced in the first place. The droop and the tracker act on different time scales, and with the rules of Section~VII in place they no longer interfere with each other.
+
+\textbf{Limitations and future work.} The results come from one installation and one season, and the V/f arms were recorded at a coarser resolution than the FOC arms. The droop reference is the open-circuit voltage captured at each start; continuous estimation of $V_{\mathrm{oc}}$ during operation, and a yield comparison over a full season with and without the droop, are left for future work.
+
+\section{Conclusion}
+
+On a PV-direct pump drive the DC link collapses within about 0.2~s once the knee of the array is crossed. Neither a current-regulating FOC drive nor a V/f drive at its modulation ceiling reduces its demand within that time. On one 22~kW machine both tripped in every controlled trial, and the FOC drive also showed failed dawn starts and a limit cycle between the tracker and the droop. A droop on the demand of the drive, evaluated in every control interrupt from the instantaneous bus voltage, restores the operating point. There were 0 trips in 12 shots with the torque-current droop and 0 in 3 with its frequency-space version, against 10 in 10 and 5 in 5 without them, and forty-five natural cloud events caused no trip. The torque-domain form keeps the flux and the observer, and it is the one recommended here. It is not justified by yield, which on this pump was the same under either law at the same operating point (3.675 against 3.687 L/Wh). Before any drive is run PV-direct, its DC-link stability should be checked against the source and not only against the motor, and the load shedding should be restored at the rate at which the bus voltage actually moves rather than at the rate at which the tracker makes its decisions.
+
+\section*{Data Availability}
+The firmware source and the CRC-verified binaries of every build used in this paper (the droop-less base, the fielded FOC revisions r1--r3, the baseline V/f controller and the V/f controller with the retreat), the capture-ring logs including the frozen trip rings, the 3~s day logs, the relay-box firmware and its time-stamped command logs, the test scripts and the figure scripts are provided in the project repository. The interactive record of the field days is at \url{https://cloud-edge-witness.web.app}. The Gerber manufacturing files, the bill of materials and the component placement file (JLCPCB format) of the control board are included in the repository; the schematics of the control board (MCU, gate drivers, measurement and power stage) are included as well. The known limits of the instrumentation are: the ring is blind for about 5~s in every 24; the V/f arms have no ring; and the lifetime trip counters are published by the firmware but not incremented, so the trip counts in this paper are reconstructed from state transitions and start events.
+\begin{thebibliography}{27}
+\bibitem{r1} S. S. Chandel, M. N. Naik, and R. Chandel, ``Review of solar photovoltaic water pumping system technology for irrigation and community drinking water supplies,'' \emph{Renewable and Sustainable Energy Reviews}, vol. 49, pp. 1084-1099, 2015.
+\bibitem{r2} S. Shukla and B. Singh, ``Reduced current sensor based solar PV fed motion sensorless induction motor drive for water pumping,'' \emph{IEEE Trans. Industrial Informatics}, vol. 15, no. 7, pp. 3973-3986, Jul. 2019, doi: 10.1109/TII.2018.2885795.
+\bibitem{r3} B. P. Rachaputi, J. R. Louis, and M. Sridharan, ``Solar photovoltaic array fed single-stage sensorless vector control of induction motor drive for water pumping applications,'' \emph{Int. J. Energy and Environmental Engineering}, vol. 14, no. 4, pp. 643-660, 2022, doi: 10.1007/s40095-022-00540-2.
+\bibitem{r4} B. P. Rachaputi, J. R. Louis, and M. Sridharan, ``Novel sliding mode control of single-stage induction motor drive for solar water pumping applications,'' \emph{Electrical Engineering}, vol. 105, no. 5, pp. 3019-3032, 2023, doi: 10.1007/s00202-023-01851-1.
+\bibitem{r5} B. Salhi, E. Zerdali, D. Rezzak, N. Boudjerda, and H. Gurleyen, ``Fully model predictive control-based solar water pumping system with sensorless induction motor drive,'' \emph{Scientific Reports}, vol. 16, 2026, doi: 10.1038/s41598-026-69335-3.
+\bibitem{r6} W. Leonhard, \emph{Control of Electrical Drives}, 3rd ed. Berlin, Germany: Springer, 2001.
+\bibitem{r7} J. Holtz, ``Sensorless control of induction motor drives,'' \emph{Proceedings of the IEEE}, vol. 90, no. 8, pp. 1359-1394, Aug. 2002.
+\bibitem{r8} C. Schauder, ``Adaptive speed identification for vector control of induction motors without rotational transducers,'' \emph{IEEE Trans. Industry Applications}, vol. 28, no. 5, pp. 1054-1061, Sep./Oct. 1992.
+\bibitem{r9} P. Kant and B. Singh, ``Model reference adaptive system based sensorless vector control scheme for a 36-pulse ac-dc converter fed multilevel-inverter driven induction motor drive,'' \emph{IET Power Electronics}, vol. 14, no. 3, pp. 706-716, 2021, doi: 10.1049/pel2.12059.
+\bibitem{r10} T. Esram and P. L. Chapman, ``Comparison of photovoltaic array maximum power point tracking techniques,'' \emph{IEEE Trans. Energy Conversion}, vol. 22, no. 2, pp. 439-449, Jun. 2007.
+\bibitem{r11} A. M. Eltamaly, ``An improved cuckoo search algorithm for maximum power point tracking of photovoltaic systems under partial shading conditions,'' \emph{Energies}, vol. 14, no. 4, art. 953, 2021, doi: 10.3390/en14040953.
+\bibitem{r12} R. D. Middlebrook, ``Input filter considerations in design and application of switching regulators,'' in \emph{Proc. IEEE Industry Applications Society Annual Meeting}, 1976, pp. 366-382.
+\bibitem{r13} A. Emadi, A. Khaligh, C. H. Rivetta, and G. A. Williamson, ``Constant power loads and negative impedance instability in automotive systems: definition, modeling, stability, and control of power electronic converters and motor drives,'' \emph{IEEE Trans. Vehicular Technology}, vol. 55, no. 4, pp. 1112-1125, Jul. 2006.
+\bibitem{r14} A. Kwasinski and C. N. Onwuchekwa, ``Dynamic behavior and stabilization of DC microgrids with instantaneous constant-power loads,'' \emph{IEEE Trans. Power Electronics}, vol. 26, no. 3, pp. 822-834, Mar. 2011.
+\bibitem{r15} A. Riccobono and E. Santi, ``Comprehensive review of stability criteria for DC power distribution systems,'' \emph{IEEE Trans. Industry Applications}, vol. 50, no. 5, pp. 3525-3535, Sep./Oct. 2014.
+\bibitem{r16} S. Karan, K. Mandal, and S. K. Chattopadhyay, ``Virtual impedance based Lyapunov controller for DC-DC converter-fed constant power load,'' in \emph{Proc. IECON 2022 - 48th Annu. Conf. IEEE Industrial Electronics Society}, 2022, pp. 1-6, doi: 10.1109/IECON49645.2022.9968632.
+\bibitem{r17} P. V. Nithara, R. Anand, J. Ramprabhakar, V. P. Meena, and B. Khan, ``A passivity based nonlinear controller for hybrid DC microgrid with constant power loads,'' \emph{Scientific Reports}, vol. 15, no. 1, 2025, doi: 10.1038/s41598-025-01390-8.
+\bibitem{r18} T. Qie, X. Zhang, W. Jiang, J. Ye, H. H. C. Iu, and T. Fernando, ``A novel data-driven large signal stabilizer for interleaved DC/DC boost converter with constant power load,'' \emph{IEEE Trans. Industrial Electronics}, vol. 71, no. 11, pp. 14308-14317, Nov. 2024, doi: 10.1109/TIE.2024.3370957.
+\bibitem{r19} X. Li, J. Zou, and J. Liu, ``DC microgrid stability control with constant power load: a review,'' \emph{J. Measurement Science and Instrumentation}, vol. 15, no. 4, pp. 532-546, 2024, doi: 10.62756/jmsi.1674-8042.2024053.
+\bibitem{r20} M. G. Villalva, J. R. Gazoli, and E. R. Filho, ``Comprehensive approach to modeling and simulation of photovoltaic arrays,'' \emph{IEEE Trans. Power Electronics}, vol. 24, no. 5, pp. 1198-1208, May 2009.
+\bibitem{r21} F. Corti, A. Laudani, G. M. Lozito, M. Palermo, M. Quercio, F. Pattini, and S. Rampino, ``Dynamic analysis of a supercapacitor DC-link in photovoltaic conversion applications,'' \emph{Energies}, vol. 16, no. 16, art. 5864, 2023, doi: 10.3390/en16165864.
+\bibitem{r22} K. Jouili, M. Charfeddine, and M. Alqarni, ``Adaptive feedback control of nonminimum phase boost converter with constant power load,'' \emph{Symmetry}, vol. 16, no. 3, art. 352, 2024, doi: 10.3390/sym16030352.
+\bibitem{r23} N. Femia, G. Petrone, G. Spagnuolo, and M. Vitelli, ``Optimization of perturb and observe maximum power point tracking method,'' \emph{IEEE Trans. Power Electronics}, vol. 20, no. 4, pp. 963-973, Jul. 2005, doi: 10.1109/TPEL.2005.850975.
+\bibitem{r24} J. Marcos, L. Marroyo, E. Lorenzo, D. Alvira, and E. Izco, ``Power output fluctuations in large scale PV plants: one year observations with one second resolution and a derived analytic model,'' \emph{Progress in Photovoltaics: Research and Applications}, vol. 19, no. 2, pp. 218-227, 2011, doi: 10.1002/pip.1016.
+\bibitem{r25} M. Lave and J. Kleissl, ``Cloud speed impact on solar variability scaling - Application to the wavelet variability model,'' \emph{Solar Energy}, vol. 91, pp. 11-21, 2013, doi: 10.1016/j.solener.2013.01.023.
+\bibitem{r26} S. D. Sudhoff, S. F. Glover, P. T. Lamm, D. H. Schmucker, and D. E. Delisle, ``Admittance space stability analysis of power electronic systems,'' \emph{IEEE Trans. Aerospace and Electronic Systems}, vol. 36, no. 3, pp. 965-973, Jul. 2000, doi: 10.1109/7.869516.
+\bibitem{r27} M. H. J. Bollen, \emph{Understanding Power Quality Problems: Voltage Sags and Interruptions}. New York, NY, USA: IEEE Press, 2000, doi: 10.1109/9780470546840.
+\end{thebibliography}
+\end{document}

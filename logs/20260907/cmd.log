@@ -1,0 +1,6 @@
+06:11:42  set BUS_SHED_HI = 0.55 -> drive stored 0.550000011920929
+06:12:50  cmd STOP -> ok
+06:12:50  set BUS_SHED_HI = 0.66 -> drive stored 0.6600000262260437
+06:21:41  cmd STOP -> ok
+06:22:12  cmd START -> ok
+07:35:27  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929

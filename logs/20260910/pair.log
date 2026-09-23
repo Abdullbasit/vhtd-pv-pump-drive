@@ -1,0 +1,147 @@
+12:01:38  attack pairs start: 2 pairs, hold 90 s, settle 300 s, order on,off
+12:01:38  drive back at speed
+12:01:44    set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+12:01:44    set BUS_SHED_LO = 0.50 -> drive stored 0.5
+12:01:47  A2: shed ON, drive ON 47.0 Hz 482 V
+12:01:47    relay mark A2 COMBINED string out + load, shed ON, 90 s -> MARK A2 COMBINED string out + load, shed ON, 90 s
+12:01:50    relay string out -> R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=5306 LOAD=OFF STRING=OUT stall=23
+12:01:50    relay load on 90 -> R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=5306 LOAD=ON STRING=OUT stall=
+12:03:34    relay string in -> R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=5410 LOAD=OFF STRING=IN stall=6 
+12:03:35    relay load off -> R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=5411 LOAD=OFF STRING=IN stall=9 
+12:03:35    end of shot: drive ON 43.1 Hz 460 V
+12:03:35    relay mark A2 result: no trip, ON 43.1 Hz -> MARK A2 result: no trip, ON 43.1 Hz
+12:03:35    settling 300 s
+12:08:39    set BUS_SHED_HI = 0.30 -> drive stored 0.30000001192092896
+12:08:39    set BUS_SHED_LO = 0.20 -> drive stored 0.20000000298023224
+12:08:42  B2: shed OFF, drive ON 47.1 Hz 482 V
+12:08:42    relay mark B2 COMBINED string out + load, shed OFF, 90 s -> MARK B2 COMBINED string out + load, shed OFF, 90 s
+12:08:45    relay string out -> R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=5721 LOAD=OFF STRING=OUT stall=8 
+12:08:45    relay load on 90 -> R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=5721 LOAD=ON STRING=OUT stall=
+12:08:51    TRIP FAULT_OC at +6 s (21)
+12:10:22    relay string in -> R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=5818 LOAD=OFF STRING=IN stall=6 
+12:10:22    relay load off -> R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=5818 LOAD=OFF STRING=IN stall=11
+12:10:22    end of shot: drive FAULT_OC 5.0 Hz 477 V - TRIPPED FAULT_OC
+12:10:22    relay mark B2 result: TRIP FAULT_OC -> MARK B2 result: TRIP FAULT_OC
+12:10:27    set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+12:10:27    set BUS_SHED_LO = 0.50 -> drive stored 0.5
+12:10:37  drive in FAULT_OC - RESET_FAULT + START
+12:10:41    cmd RESET_FAULT -> ok
+12:10:51    cmd START -> ok
+12:13:36  drive back at speed
+12:13:36    settling 300 s
+12:18:42    set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+12:18:42    set BUS_SHED_LO = 0.50 -> drive stored 0.5
+12:18:45  A3: shed ON, drive ON 46.8 Hz 474 V
+12:18:45    relay mark A3 COMBINED string out + load, shed ON, 90 s -> MARK A3 COMBINED string out + load, shed ON, 90 s
+12:18:48    relay string out -> R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=6324 LOAD=OFF STRING=OUT stall=8 
+12:18:48    relay load on 90 -> R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=6324 LOAD=ON STRING=OUT stall=
+12:20:26    relay string in -> R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=6421 LOAD=OFF STRING=IN stall=6 
+12:20:26    relay load off -> R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=6422 LOAD=OFF STRING=IN stall=9 
+12:20:26    end of shot: drive ON 32.8 Hz 504 V
+12:20:26    relay mark A3 result: no trip, ON 32.8 Hz -> MARK A3 result: no trip, ON 32.8 Hz
+12:20:26    settling 300 s
+12:25:29    set BUS_SHED_HI = 0.30 -> drive stored 0.30000001192092896
+12:25:29    set BUS_SHED_LO = 0.20 -> drive stored 0.20000000298023224
+12:25:32  B3: shed OFF, drive ON 46.7 Hz 476 V
+12:25:32    relay mark B3 COMBINED string out + load, shed OFF, 90 s -> MARK B3 COMBINED string out + load, shed OFF, 90 s
+12:25:39    relay string out -> R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=6735 LOAD=OFF STRING=OUT stall=9 
+12:25:39    relay load on 90 -> R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=6735 LOAD=ON STRING=OUT stall=
+12:25:42    TRIP FAULT_OC at +3 s (21)
+12:27:16    relay string in -> R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=6832 LOAD=OFF STRING=IN stall=8 
+12:27:17    relay load off -> R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=6833 LOAD=OFF STRING=IN stall=10
+12:27:17    end of shot: drive FAULT_OC 5.0 Hz 528 V - TRIPPED FAULT_OC
+12:27:17    relay mark B3 result: TRIP FAULT_OC -> MARK B3 result: TRIP FAULT_OC
+12:27:27    set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+12:27:27    set BUS_SHED_LO = 0.50 -> drive stored 0.5
+12:27:37  drive in FAULT_OC - RESET_FAULT + START
+12:27:41    cmd RESET_FAULT -> ok
+12:27:51    cmd START -> ok
+12:30:41  drive back at speed
+12:30:41    settling 300 s
+12:35:41  attack pairs done
+12:35:50    set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+12:35:50    set BUS_SHED_LO = 0.50 -> drive stored 0.5
+12:35:53    relay all off -> ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=7349 LOAD=OFF STRING=IN stall=7
+12:35:53  shed restored 0.80/0.50, relays open
+14:24:12  attack pairs start: 1 pairs, hold 90 s, settle 300 s, order on,off
+14:24:12  drive back at speed
+14:24:14    set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+14:24:14    set BUS_SHED_LO = 0.50 -> drive stored 0.5
+14:24:17  A4: shed ON, drive ON 46.6 Hz 466 V
+14:24:17    relay mark A4 COMBINED string out + load, shed ON, 90 s -> MARK A4 COMBINED string out + load, shed ON, 90 s
+14:24:20    relay string out -> R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=13856 LOAD=OFF STRING=OUT stall=9
+14:24:21    relay load on 90 -> R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=13856 LOAD=ON STRING=OUT stall
+14:25:58    relay string in -> R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=13954 LOAD=OFF STRING=IN stall=6
+14:25:58    relay load off -> R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=13954 LOAD=OFF STRING=IN stall=9
+14:25:58    end of shot: drive ON 40.6 Hz 460 V
+14:25:58    relay mark A4 result: no trip, ON 40.6 Hz -> MARK A4 result: no trip, ON 40.6 Hz
+14:25:58    settling 300 s
+14:31:02    set BUS_SHED_HI = 0.30 -> drive stored 0.30000001192092896
+14:31:02    set BUS_SHED_LO = 0.20 -> drive stored 0.20000000298023224
+14:31:05  B4: shed OFF, drive ON 45.5 Hz 469 V
+14:31:05    relay mark B4 COMBINED string out + load, shed OFF, 90 s -> MARK B4 COMBINED string out + load, shed OFF, 90 s
+14:31:08    relay string out -> R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=14264 LOAD=OFF STRING=OUT stall=8
+14:31:08    relay load on 90 -> R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=14264 LOAD=ON STRING=OUT stall
+14:31:15    TRIP FAULT_UV_WAIT at +6 s (5)
+14:32:46    relay string in -> R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=14362 LOAD=OFF STRING=IN stall=6
+14:32:46    relay load off -> R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=14362 LOAD=OFF STRING=IN stall=1
+14:32:46    end of shot: drive ON 25.3 Hz 526 V - TRIPPED FAULT_UV_WAIT
+14:32:46    relay mark B4 result: TRIP FAULT_UV_WAIT -> MARK B4 result: TRIP FAULT_UV_WAIT
+14:32:57    set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+14:32:57    set BUS_SHED_LO = 0.50 -> drive stored 0.5
+14:34:08  drive back at speed
+14:34:08    settling 300 s
+14:39:08  attack pairs done
+14:39:18    set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+14:39:18    set BUS_SHED_LO = 0.50 -> drive stored 0.5
+14:39:21    relay all off -> ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=14757 LOAD=OFF STRING=IN stall=
+14:39:21  shed restored 0.80/0.50, relays open
+15:28:28  attack pairs start: 1 pairs, hold 90 s, settle 300 s, order on,off
+15:34:28  drive back at speed
+15:34:34    set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+15:34:34    set BUS_SHED_LO = 0.50 -> drive stored 0.5
+15:34:37  A5: shed ON, drive ON 40.5 Hz 476 V
+15:34:37    relay mark A5 COMBINED string out + load, shed ON, 90 s -> MARK A5 COMBINED string out + load, shed ON, 90 s
+15:34:40    relay string out -> R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=18076 LOAD=OFF STRING=OUT stall=8
+15:34:40    relay load on 90 -> R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=18076 LOAD=ON STRING=OUT stall
+15:36:18    relay string in -> R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=18174 LOAD=OFF STRING=IN stall=8
+15:36:18    relay load off -> R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=18174 LOAD=OFF STRING=IN stall=1
+15:36:18    end of shot: drive ON 34.4 Hz 478 V
+15:36:18    relay mark A5 result: no trip, ON 34.4 Hz -> MARK A5 result: no trip, ON 34.4 Hz
+15:36:18    settling 300 s
+15:41:20    set BUS_SHED_HI = 0.30 -> drive stored 0.30000001192092896
+15:41:20    set BUS_SHED_LO = 0.20 -> drive stored 0.20000000298023224
+15:41:23  B5: shed OFF, drive ON 39.6 Hz 476 V
+15:41:23    relay mark B5 COMBINED string out + load, shed OFF, 90 s -> MARK B5 COMBINED string out + load, shed OFF, 90 s
+15:41:26    relay string out -> R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=18482 LOAD=OFF STRING=OUT stall=7
+15:41:27    relay load on 90 -> R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=18482 LOAD=ON STRING=OUT stall
+15:41:33    TRIP FAULT_OC at +6 s (21)
+15:43:04    relay string in -> R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=18580 LOAD=OFF STRING=IN stall=6
+15:43:04    relay load off -> R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=18580 LOAD=OFF STRING=IN stall=1
+15:43:04    end of shot: drive FAULT_OC 5.0 Hz 530 V - TRIPPED FAULT_OC
+15:43:04    relay mark B5 result: TRIP FAULT_OC -> MARK B5 result: TRIP FAULT_OC
+15:43:06    set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+15:43:06    set BUS_SHED_LO = 0.50 -> drive stored 0.5
+15:43:16  drive in FAULT_OC - RESET_FAULT + START
+15:43:19    cmd RESET_FAULT -> ok
+15:43:26    cmd START -> ok
+15:49:27  drive back at speed
+15:49:27    settling 300 s
+15:54:27  attack pairs done
+15:54:32    set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+15:54:32    set BUS_SHED_LO = 0.50 -> drive stored 0.5
+15:54:35    relay all off -> ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19271 LOAD=OFF STRING=IN stall=
+15:54:35  shed restored 0.80/0.50, relays open
+16:03:43  attack pairs start: 1 pairs, hold 90 s, settle 300 s, order on,off
+16:03:44  drive back at speed
+16:03:55    set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+16:03:55    set BUS_SHED_LO = 0.50 -> drive stored 0.5
+16:03:58  A6: shed ON, drive ON 36.7 Hz 489 V
+16:03:58    relay mark A6 COMBINED string out + load, shed ON, 90 s -> MARK A6 COMBINED string out + load, shed ON, 90 s
+16:04:01    relay string out -> R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=19836 LOAD=OFF STRING=OUT stall=9
+16:04:01    relay load on 90 -> R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=19837 LOAD=ON STRING=OUT stall
+16:05:38    relay string in -> R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19934 LOAD=OFF STRING=IN stall=6
+16:05:39    relay load off -> R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19934 LOAD=OFF STRING=IN stall=9
+16:05:39    end of shot: drive ON 20.9 Hz 526 V
+16:05:39    relay mark A6 result: no trip, ON 20.9 Hz -> MARK A6 result: no trip, ON 20.9 Hz
+16:05:39    settling 300 s

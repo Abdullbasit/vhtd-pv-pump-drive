@@ -1,0 +1,1 @@
+Sheet 4 (power stage): the IGBT symbol in the original CAD export was labelled FS150R12KT4; the fitted module is the Infineon FS100R12KT3 (1200 V / 100 A). The label is corrected in HS300_sch_4_power_stage.pdf and HS300_schematics_all.pdf; the original export is kept as HS300_sch_4_power_stage_orig_label.pdf.

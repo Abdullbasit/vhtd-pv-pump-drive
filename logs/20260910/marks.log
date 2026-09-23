@@ -1,0 +1,119 @@
+10:44:55.421  MARK pre-A: drive ON 46.2 Hz rotor 42.9, 467 V 29.4 A 13.7 kW, Voc 519.5 vratio 0.90, F49 0.80, all 4 banks breakers closed (12 kW) - asking for 1 bank first
+10:46:46.569  MARK A1 3kW bank 1 only - 120 s on for the clamp reading
+10:46:49.720  R1 ON 120 -> [local] OK R1=1 R2=0 R3=0 R4=0 up=805 LOAD=ON STRING=IN stall=8 mqtt=1 rssi=-69
+10:50:10.752  MARK A1 clamp 6.06 A on bank 1 at ~455 V = 2.76 kW, R ~75 ohm; release 10:48:50 clean, bus 457->471 V, tracker back at 46.5 Hz in 10 s
+10:53:14.232  MARK A2 6kW banks 1+2 - 90 s
+10:53:17.287  R1 ON 90 -> [local] OK R1=1 R2=0 R3=0 R4=0 up=1193 LOAD=ON STRING=IN stall=6 mqtt=1 rssi=-70
+10:56:10.912  MARK A2 clamp 11.6 A at ~442 V = 5.13 kW (banks 1+2); release 10:54:47 clean, 44.6->46.2 Hz in 10 s, water back in 30 s
+10:57:50.168  MARK A2 repeat 6kW banks 1+2 - 90 s
+10:57:53.257  R1 ON 90 -> [local] OK R1=1 R2=0 R3=0 R4=0 up=1469 LOAD=ON STRING=IN stall=6 mqtt=1 rssi=-69
+11:02:00.989  MARK A2 repeat clamp 11.38 A first then 11.46-11.56 A at ~440 V = 5.0-5.1 kW (banks 1+2), release 10:59:23 clean
+11:03:25.683  MARK A3 prep: load on 180 s with banks 1+2; user closes CB3 by hand while on (6 -> 9 kW step at the breaker) and clamps
+11:03:28.787  R1 ON 180 -> [local] OK R1=1 R2=0 R3=0 R4=0 up=1804 LOAD=ON STRING=IN stall=6 mqtt=1 rssi=-69
+11:07:37.509  MARK A3 = the 11:03:28 shot WAS 3 banks: clamp 17.6 A at ~449 V = 7.9 kW; shed engaged to 0.932 at the edge, tracker 46.4->40.3 Hz then held 41 Hz / 449 V for 3 min (sag line), release 11:06:28 back to 46.8 Hz in 17 s
+11:08:33.426  MARK A4 string out (R2 ON) - hold 3 min
+11:08:36.795  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=2112 LOAD=OFF STRING=OUT stall=7 mqtt=1 rssi=-70
+11:11:39.796  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=2295 LOAD=OFF STRING=IN stall=11 mqtt=1 rssi=-69
+11:12:44.204  MARK A4 string in at 11:11:3x
+11:15:15.696  MARK A5 12kW all 4 banks - 150 s for the clamp
+11:15:18.819  R1 ON 150 -> [local] OK R1=1 R2=0 R3=0 R4=0 up=2514 LOAD=ON STRING=IN stall=8 mqtt=1 rssi=-70
+11:19:02.602  MARK A5 clamp 21 A then 23.x A at ~450 V = 9.5-10.4 kW (4 banks); shed_min 0.792, bus min 384 V, tracker 46.6->36.3 then 37.7 Hz on the 450 V sag line; release 11:17:49 back to 46.6 Hz in 16 s
+11:20:48.916  MARK BLOCK B shed OFF: F49 0.30 / F50 0.20 (lines 156/104 V, under the 200 V UV trip)
+11:21:15.572  MARK B1 string out (shed off)
+11:21:18.721  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=2874 LOAD=OFF STRING=OUT stall=6 mqtt=1 rssi=-69
+11:24:22.144  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=3058 LOAD=OFF STRING=IN stall=10 mqtt=1 rssi=-70
+11:27:25.219  MARK B2 12kW all 4 banks, SHED OFF - 90 s
+11:27:28.499  R1 ON 90 -> [local] OK R1=1 R2=0 R3=0 R4=0 up=3244 LOAD=ON STRING=IN stall=10 mqtt=1 rssi=-69
+11:32:00.189  MARK B3 COMBINED: string out + 12 kW, SHED OFF, 90 s
+11:32:04.133  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=3520 LOAD=OFF STRING=OUT stall=6 mqtt=1 rssi=-70
+11:32:04.561  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=3520 LOAD=ON STRING=OUT stall=11 mqtt=1 rssi=-69
+11:33:40.093  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=3615 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-70
+11:40:14.280  MARK B3 result: FAULT_OC 21 (dq tracking) 0.4 s after the edge at 410 V, shed off; RESET_FAULT 11:36:10, START 11:36:44, back at speed 11:39:36; shed restored 0.80/0.50
+11:44:40.182  MARK A6 COMBINED: string out + 12 kW, SHED ON (0.80/0.50), 90 s
+11:44:45.257  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=4281 LOAD=OFF STRING=OUT stall=10 mqtt=1 rssi=-68
+11:44:45.664  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=4281 LOAD=ON STRING=OUT stall=10 mqtt=1 rssi=-70
+11:46:21.510  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=4377 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-70
+11:48:04.996  MARK A6 result: NO TRIP. shed_min 0.401, bus min 325 V, drive 30->14 A within 80 ms, tracker to 23 Hz (sag line 453 V), water 0 for ~80 s, release 11:46:16 back to 46.8 Hz in 20 s, water in 30 s
+12:01:47.287  MARK A2 COMBINED string out + load, shed ON, 90 s
+12:01:50.306  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=5306 LOAD=OFF STRING=OUT stall=2399 mqtt=1 rssi=-75
+12:01:50.496  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=5306 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-75
+12:03:34.969  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=5410 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+12:03:35.147  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=5411 LOAD=OFF STRING=IN stall=9 mqtt=1 rssi=-75
+12:03:35.240  MARK A2 result: no trip, ON 43.1 Hz
+12:08:42.364  MARK B2 COMBINED string out + load, shed OFF, 90 s
+12:08:45.338  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=5721 LOAD=OFF STRING=OUT stall=8 mqtt=1 rssi=-75
+12:08:45.518  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=5721 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-75
+12:10:22.696  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=5818 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-76
+12:10:22.930  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=5818 LOAD=OFF STRING=IN stall=11 mqtt=1 rssi=-76
+12:10:22.989  MARK B2 result: TRIP FAULT_OC
+12:14:14.629  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=6050 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-75
+12:18:45.798  MARK A3 COMBINED string out + load, shed ON, 90 s
+12:18:48.683  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=6324 LOAD=OFF STRING=OUT stall=8 mqtt=1 rssi=-75
+12:18:48.853  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=6324 LOAD=ON STRING=OUT stall=10 mqtt=1 rssi=-75
+12:20:26.050  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=6421 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+12:20:26.251  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=6422 LOAD=OFF STRING=IN stall=9 mqtt=1 rssi=-75
+12:20:26.355  MARK A3 result: no trip, ON 32.8 Hz
+12:25:32.474  MARK B3 COMBINED string out + load, shed OFF, 90 s
+12:25:39.375  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=6735 LOAD=OFF STRING=OUT stall=9 mqtt=1 rssi=-75
+12:25:39.576  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=6735 LOAD=ON STRING=OUT stall=11 mqtt=1 rssi=-75
+12:25:41.934  STATUS -> [local] OK R1=1 R2=1 R3=0 R4=0 up=6737 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-75
+12:27:16.858  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=6832 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-75
+12:27:17.075  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=6833 LOAD=OFF STRING=IN stall=10 mqtt=1 rssi=-75
+12:27:17.172  MARK B3 result: TRIP FAULT_OC
+12:35:53.065  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=7349 LOAD=OFF STRING=IN stall=7 mqtt=1 rssi=-75
+12:36:15.084  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=7371 LOAD=OFF STRING=IN stall=12 mqtt=1 rssi=-75
+12:37:24.288  MARK A7 string out/in WHILE LOAD ON (shed on): load 240 s, string out at +60, in at +120
+12:37:27.369  R1 ON 240 -> [local] OK R1=1 R2=0 R3=0 R4=0 up=7443 LOAD=ON STRING=IN stall=8 mqtt=1 rssi=-75
+12:38:31.373  R2 ON -> [local] OK R1=1 R2=1 R3=0 R4=0 up=7507 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-75
+12:39:30.958  R2 OFF -> [local] OK R1=1 R2=0 R3=0 R4=0 up=7566 LOAD=ON STRING=IN stall=8 mqtt=1 rssi=-75
+12:41:39.585  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=7695 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+12:44:17.252  MARK B7 string out/in WHILE LOAD ON, SHED OFF: load 240 s, string out at +60, in at +120
+12:44:17.688  R1 ON 240 -> FAILED local+cloud: [Errno 11001] getaddrinfo failed
+12:45:21.535  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=7917 LOAD=OFF STRING=OUT stall=1896 mqtt=1 rssi=-74
+12:46:20.924  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=7976 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-73
+12:48:28.626  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=8104 LOAD=OFF STRING=IN stall=7 mqtt=1 rssi=-73
+12:49:03.540  MARK B7 REDO (12:44 load command failed on DNS - that run was string-only): shed OFF, load 240 s, string out +60, in +120
+12:49:06.600  R1 ON 240 -> [local] OK R1=1 R2=0 R3=0 R4=0 up=8142 LOAD=ON STRING=IN stall=7 mqtt=1 rssi=-73
+12:50:10.301  R2 ON -> [local] OK R1=1 R2=1 R3=0 R4=0 up=8206 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-72
+12:51:13.691  R2 OFF -> [local] OK R1=1 R2=0 R3=0 R4=0 up=8269 LOAD=ON STRING=IN stall=8 mqtt=1 rssi=-73
+12:53:17.584  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=8393 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-72
+12:55:08.172  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=8504 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-73
+14:23:37.056  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=13812 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-75
+14:24:17.954  MARK A4 COMBINED string out + load, shed ON, 90 s
+14:24:20.881  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=13856 LOAD=OFF STRING=OUT stall=9 mqtt=1 rssi=-76
+14:24:21.067  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=13856 LOAD=ON STRING=OUT stall=10 mqtt=1 rssi=-75
+14:25:58.360  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=13954 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+14:25:58.558  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=13954 LOAD=OFF STRING=IN stall=9 mqtt=1 rssi=-75
+14:25:58.648  MARK A4 result: no trip, ON 40.6 Hz
+14:31:05.766  MARK B4 COMBINED string out + load, shed OFF, 90 s
+14:31:08.746  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=14264 LOAD=OFF STRING=OUT stall=8 mqtt=1 rssi=-76
+14:31:08.949  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=14264 LOAD=ON STRING=OUT stall=10 mqtt=1 rssi=-76
+14:32:46.220  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=14362 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+14:32:46.422  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=14362 LOAD=OFF STRING=IN stall=10 mqtt=1 rssi=-76
+14:32:46.500  MARK B4 result: TRIP FAULT_UV_WAIT
+14:39:21.169  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=14757 LOAD=OFF STRING=IN stall=9 mqtt=1 rssi=-75
+15:28:27.541  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=17703 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-75
+15:34:37.737  MARK A5 COMBINED string out + load, shed ON, 90 s
+15:34:40.572  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=18076 LOAD=OFF STRING=OUT stall=8 mqtt=1 rssi=-76
+15:34:40.773  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=18076 LOAD=ON STRING=OUT stall=10 mqtt=1 rssi=-76
+15:36:18.473  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=18174 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-75
+15:36:18.680  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=18174 LOAD=OFF STRING=IN stall=10 mqtt=1 rssi=-75
+15:36:18.798  MARK A5 result: no trip, ON 34.4 Hz
+15:41:23.948  MARK B5 COMBINED string out + load, shed OFF, 90 s
+15:41:26.810  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=18482 LOAD=OFF STRING=OUT stall=7 mqtt=1 rssi=-75
+15:41:27.000  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=18482 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-75
+15:43:04.515  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=18580 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+15:43:04.692  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=18580 LOAD=OFF STRING=IN stall=10 mqtt=1 rssi=-76
+15:43:04.783  MARK B5 result: TRIP FAULT_OC
+15:54:35.284  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19271 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-76
+15:55:12.450  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19308 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-75
+16:03:43.425  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19819 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-76
+16:03:58.166  MARK A6 COMBINED string out + load, shed ON, 90 s
+16:04:01.047  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=19836 LOAD=OFF STRING=OUT stall=9 mqtt=1 rssi=-75
+16:04:01.257  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=19837 LOAD=ON STRING=OUT stall=10 mqtt=1 rssi=-75
+16:05:38.845  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19934 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+16:05:39.049  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19934 LOAD=OFF STRING=IN stall=9 mqtt=1 rssi=-76
+16:05:39.162  MARK A6 result: no trip, ON 20.9 Hz
+16:06:38.225  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19994 LOAD=OFF STRING=IN stall=7 mqtt=1 rssi=-76
+16:06:56.568  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=20012 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-76
+18:49:12.252  STATUS -> [cloud] NO REPLY

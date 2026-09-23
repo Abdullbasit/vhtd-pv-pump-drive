@@ -1,0 +1,79 @@
+ADC OFFSETS  D00..D13 (0x0000..0x001B)
+  D00 VDC            0
+  D01 IDC          443
+  D02 VGA            0
+  D03 VGB         2020
+  D04 VGC         1010
+  D05 I_INVA      2052
+  D06 I_INVB      2040
+  D07 I_INVC      2041
+  D08 I_GRID_A    1893
+  D09 I_GRID_B    1917
+  D10 I_GRID_C    1905
+  D11 V_INVA         0
+  D12 V_INVB      2025
+  D13 V_INVC      2025
+
+SETTINGS F00..F31 (0x0040)
+  F00    11
+  F01    44
+  F02   100
+  F03   800
+  F04  1000
+  F05    90
+  F06     5
+  F07    12
+  F08     5
+  F09    50
+  F10     1
+  F11    10
+  F12    35
+  F13   100
+  F14     5
+  F15    10
+  F16   180
+  F17    10
+  F18    29
+  F19     1
+  F20    60
+  F21   180
+  F22  1000
+  F23   963
+  F24  1000
+  F25  1000
+  F26  1000
+  F27  1000
+  F28  1000
+  F29  1000
+  F30  1000
+  F31  1000
+
+SETTINGS F32..F50 (0x0200)
+  F32    50
+  F33     1
+  F34    50
+  F35    25
+  F36    20
+  F37   150
+  F38   600
+  F39   500
+  F40     0
+  F41   150
+  F42   380
+  F43    50
+  F44   340
+  F45     1
+  F46  2900
+  F47    10
+  F48     0
+  F49   800
+  F50   500
+
+FOC STORE A (0x0180)  magic 0x464F4331 ver 2 tuned 1 seq 112 crc 0x842D
+  Rs 0.873000  Rr 0.300000  Lm 0.057200  Lls 0.002832  Llr 0.003766  vdead 0.0000
+  plate 15.00 kW 380 V 50 Hz 34.00 A  pp 1  2900 rpm  sig 0x278101BD
+
+FOC STORE B (0x01C0)  magic 0x464F4331 ver 2 tuned 1 seq 113 crc 0x7F2E
+  Rs 0.873000  Rr 0.300000  Lm 0.057200  Lls 0.002832  Llr 0.002832  vdead 0.0000
+  plate 15.00 kW 380 V 50 Hz 34.00 A  pp 1  2900 rpm  sig 0x278101BD
+

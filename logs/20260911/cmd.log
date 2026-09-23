@@ -1,0 +1,46 @@
+05:53:59  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+05:57:13  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+06:54:41  cmd STOP -> ok
+06:55:31  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+06:55:31  cmd START -> ok
+07:54:08  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+07:54:08  set BUS_SHED_LO = 0.50 -> drive stored 0.5
+08:00:56  set BUS_SHED_HI = 0.30 -> drive stored 0.30000001192092896
+08:00:56  set BUS_SHED_LO = 0.20 -> drive stored 0.20000000298023224
+08:02:47  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+08:02:48  set BUS_SHED_LO = 0.50 -> drive stored 0.5
+08:03:02  cmd RESET_FAULT -> ok
+08:03:11  cmd START -> ok
+08:10:04  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+08:10:04  set BUS_SHED_LO = 0.50 -> drive stored 0.5
+08:17:11  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+08:17:11  set BUS_SHED_LO = 0.50 -> drive stored 0.5
+08:23:56  set BUS_SHED_HI = 0.30 -> drive stored 0.30000001192092896
+08:23:56  set BUS_SHED_LO = 0.20 -> drive stored 0.20000000298023224
+08:25:43  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+08:25:43  set BUS_SHED_LO = 0.50 -> drive stored 0.5
+08:25:57  cmd RESET_FAULT -> ok
+08:26:07  cmd START -> ok
+08:33:02  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+08:33:02  set BUS_SHED_LO = 0.50 -> drive stored 0.5
+10:11:06  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+10:11:06  set BUS_SHED_LO = 0.50 -> drive stored 0.5
+10:18:10  set BUS_SHED_HI = 0.30 -> drive stored 0.30000001192092896
+10:18:10  set BUS_SHED_LO = 0.20 -> drive stored 0.20000000298023224
+10:20:13  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+10:20:13  set BUS_SHED_LO = 0.50 -> drive stored 0.5
+10:25:17  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+10:25:17  set BUS_SHED_LO = 0.50 -> drive stored 0.5
+10:29:18  cmd STOP -> ok
+10:30:12  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+10:30:12  cmd START -> ok
+10:59:26  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+10:59:26  set BUS_SHED_LO = 0.50 -> drive stored 0.5
+11:06:27  set BUS_SHED_HI = 0.30 -> drive stored 0.30000001192092896
+11:06:27  set BUS_SHED_LO = 0.20 -> drive stored 0.20000000298023224
+11:08:33  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+11:08:33  set BUS_SHED_LO = 0.50 -> drive stored 0.5
+11:08:46  cmd RESET_FAULT -> ok
+11:08:53  cmd START -> ok
+11:15:45  set BUS_SHED_HI = 0.80 -> drive stored 0.800000011920929
+11:15:45  set BUS_SHED_LO = 0.50 -> drive stored 0.5

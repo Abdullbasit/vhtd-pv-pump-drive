@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cloud-Edge Field Record</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{ --bg:#f5f6f4; --panel:#ffffff; --ink:#1d2126; --muted:#6b7280; --rule:#d9dcd6; --grid:#e6e8e3;
+  --power:#1f4e79; --bus:#4a4e55; --speed:#6b5f4e; --flow:#2e7d32; --eng:#1565c0; --on:#2e7d32; --off:#c62828; --hi:#b0413e; --cross:#1d2126; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --bg:#15181c; --panel:#1c2026; --ink:#e6e8ea; --muted:#9aa1ab; --rule:#2c3138; --grid:#252a31;
+  --power:#7fb0e0; --bus:#b8bcc4; --speed:#c9b79b; --flow:#6cc070; --eng:#5b9cf0; --on:#5fbf65; --off:#ef6b6b; --hi:#e07a77; --cross:#e6e8ea; }}
+:root[data-theme="dark"]{ --bg:#15181c; --panel:#1c2026; --ink:#e6e8ea; --muted:#9aa1ab; --rule:#2c3138; --grid:#252a31;
+  --power:#7fb0e0; --bus:#b8bcc4; --speed:#c9b79b; --flow:#6cc070; --eng:#5b9cf0; --on:#5fbf65; --off:#ef6b6b; --hi:#e07a77; --cross:#e6e8ea; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,Segoe UI,Roboto,sans-serif;font-size:14px;line-height:1.45}
+header{padding:20px 28px 10px;border-bottom:1px solid var(--rule)}
+h1{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;font-weight:600;font-size:28px;margin:0 0 4px;letter-spacing:.005em}
+.sub{color:var(--muted);max-width:78ch;margin:0}
+.days{display:flex;flex-wrap:wrap;gap:8px;padding:12px 28px 4px;border-bottom:1px solid var(--rule)}
+.days button{font:inherit;font-size:13px;padding:6px 12px;border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:4px;cursor:pointer}
+.days button[aria-pressed="true"]{border-color:var(--eng);color:var(--eng);font-weight:500}
+.days button:focus-visible{outline:2px solid var(--eng);outline-offset:2px}
+.days .note{align-self:center;color:var(--muted);font-size:12px;margin-left:8px}
+.totals{display:flex;flex-wrap:wrap;gap:10px 28px;padding:12px 28px;border-bottom:1px solid var(--rule);font-variant-numeric:tabular-nums}
+.totals div{display:flex;flex-direction:column}
+.totals b{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;font-weight:500;font-size:18px}
+.totals span{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+main{display:grid;grid-template-columns:minmax(0,1fr) 300px}
+@media (max-width:900px){ main{grid-template-columns:1fr} aside{border-left:0;border-top:1px solid var(--rule)} }
+#charts{padding:8px 8px 8px 0;position:relative;min-height:400px}
+canvas{display:block;width:100%;touch-action:none}
+#loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+aside{border-left:1px solid var(--rule);padding:14px 16px;background:var(--panel);font-variant-numeric:tabular-nums;position:sticky;top:0;align-self:start;max-height:100vh;overflow:auto}
+aside h2{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 4px;font-weight:500}
+#when{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:20px;margin:0 0 2px}
+#state{font-size:12px;color:var(--muted);margin:0 0 10px;min-height:18px}
+.pin{display:inline-block;font-size:11px;padding:1px 7px;border:1px solid var(--rule);border-radius:10px;color:var(--muted);margin-left:6px}
+.pin.on{color:var(--eng);border-color:var(--eng)}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+td{padding:2px 0;border-bottom:1px solid var(--grid);vertical-align:top}
+td:first-child{color:var(--muted);padding-right:8px;white-space:nowrap}
+td:last-child{text-align:right;font-family:"IBM Plex Mono",ui-monospace,monospace}
+tr.key td{font-weight:500;color:var(--ink)} tr.key td:first-child{color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;padding:6px 28px 10px;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:6px}
+footer{padding:12px 28px 24px;color:var(--muted);font-size:12px;max-width:95ch;border-top:1px solid var(--rule)}
+footer code{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px}
+kbd{font-family:"IBM Plex Mono",monospace;font-size:11px;border:1px solid var(--rule);border-radius:3px;padding:0 4px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Cloud-Edge Field Record</h1>
+  <p class="sub">Complete telemetry of the field days behind the manuscript <em>Field-Validated Voltage-Headroom Torque Droop for Riding Through DC-Link Collapse in PV-Direct Sensorless Pump Drives</em> (22 kW IGBT drive, 70 m well, 36 × LONGi Hi-MO 7 610 W array, 12S3P). Every register the drive publishes, one row per 3 s. Move the cursor over any panel to read all registers at that instant; click to pin; <kbd>←</kbd> <kbd>→</kbd> step, <kbd>Esc</kbd> unpins.</p>
+</header>
+<div class="days" id="days"></div>
+<div class="totals" id="totals"></div>
+<div class="legend">
+  <span><i style="background:var(--power)"></i>DC power</span>
+  <span><i style="background:var(--bus)"></i>DC-link voltage, with HI 0.80 V<sub>oc</sub>, LO 0.50 V<sub>oc</sub> and the 200 V trip level</span>
+  <span><i style="background:var(--eng)"></i>droop engagement (tick height = 1 − k<sub>min</sub> of an 80 ms ring window)</span>
+  <span><i style="background:var(--on)"></i>shot, droop on</span>
+  <span><i style="background:var(--off)"></i>shot, droop off</span>
+  <span><i style="background:var(--flow)"></i>flow</span>
+</div>
+<main>
+  <div id="charts"><canvas id="c" aria-label="Day telemetry, four stacked panels sharing the time axis"></canvas><div id="loading">loading…</div></div>
+  <aside>
+    <h2>At the cursor</h2>
+    <p id="when">—</p>
+    <p id="state"><span id="pinlbl" class="pin">hover</span></p>
+    <table id="rd"></table>
+  </aside>
+</main>
+<footer>
+  Source per day: <code>solar_day_&lt;date&gt;.csv</code> (the drive's own readings and the clamp-on ultrasonic flow meter, 3 s rows), <code>ring/index.csv</code> (80 ms capture-ring windows: droop engagements and their minimum k) and <code>marks.log</code> (relay-box commands, time-stamped on the same clock). 2026-09-07: broken cloud, HI line changed 0.66 → 0.80 at 07:35. 2026-09-10: the controlled-test day (resistor bank and string isolator). 2026-09-11: broken cloud with the morning shots A7–B10. 2026-09-14: the V/f arms (baseline and retreat) and the flow-metered yield blocks; the FOC log has gaps where the V/f firmware was running. Nothing here is edited or smoothed.
+</footer>
+<script>
+(function(){
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+let D=null, rows=[], cols=[], T=[], t0=0, t1=0, eng=[], shots=[], shotT=[], dayIso='';
+let W=0,H=0,dpr=1,L=62,R=14,top=10,gap=14,ph=0,pinned=false,cur=-1;
+const panels = [
+  {key:'P_W', label:'DC power (kW)', scale:1/1000, min:0, max:17, color:'--power'},
+  {key:'VDC', label:'DC-link voltage (V)', scale:1, min:150, max:560, color:'--bus', lines:[[416,'HI 0.80 V_oc'],[260,'LO 0.50 V_oc'],[200,'UV trip 200 V']]},
+  {key:'f_rot', label:'rotor speed (Hz)', scale:1, min:0, max:50, color:'--speed', lines:[[26.4,'pump cut-in 26.4 Hz']]},
+  {key:'Q_m3h', label:'flow (m³/h)', scale:1, min:0, max:60, color:'--flow'}
+];
+const num = (r,k) => (r[k]==null? NaN : r[k]);
+const xOf = t => L + (t-t0)/(t1-t0)*(W-L-R);
+const tOf = x => t0 + (x-L)/(W-L-R)*(t1-t0);
+function layout(){ const r = cv.parentElement.getBoundingClientRect(); W = Math.max(320, r.width); H = Math.max(560, Math.min(900, window.innerHeight-300)); dpr = window.devicePixelRatio||1; cv.width=W*dpr; cv.height=H*dpr; cv.style.height=H+'px'; ph = (H-top-gap*3-30)/4; }
+function yOf(p,i,v){ const y0 = top + i*(ph+gap); return y0 + ph - (v-p.min)/(p.max-p.min)*ph; }
+function draw(){
+  if(!D) return;
+  ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H);
+  ctx.font = '11px "IBM Plex Sans", system-ui, sans-serif';
+  const ink=css('--ink'), muted=css('--muted'), grid=css('--grid'), rule=css('--rule');
+  panels.forEach((p,i)=>{
+    const y0 = top + i*(ph+gap), y1 = y0+ph;
+    ctx.fillStyle = css('--panel'); ctx.fillRect(L,y0,W-L-R,ph);
+    ctx.strokeStyle = grid; ctx.lineWidth=1;
+    for(let h=5; h<=20; h++){ const tm = Date.parse(dayIso+'T'+String(h).padStart(2,'0')+':00:00'); if(tm<t0||tm>t1) continue; const x = xOf(tm); ctx.beginPath(); ctx.moveTo(x,y0); ctx.lineTo(x,y1); ctx.stroke();
+      if(i===3){ ctx.fillStyle=muted; ctx.textAlign='center'; ctx.fillText(String(h).padStart(2,'0')+':00', x, y1+14); } }
+    for(let k=0;k<=4;k++){ const v = p.min + (p.max-p.min)*k/4; const y = yOf(p,i,v); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(W-R,y); ctx.stroke(); ctx.fillStyle=muted; ctx.textAlign='right'; ctx.fillText(v.toFixed(0), L-6, y+4); }
+    ctx.strokeStyle = rule; ctx.strokeRect(L,y0,W-L-R,ph);
+    ctx.save(); ctx.translate(14, y0+ph/2); ctx.rotate(-Math.PI/2); ctx.textAlign='center'; ctx.fillStyle=ink; ctx.fillText(p.label,0,0); ctx.restore();
+    (p.lines||[]).forEach(([v,l])=>{ const y=yOf(p,i,v); ctx.strokeStyle=css('--hi'); ctx.setLineDash([4,3]); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(W-R,y); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle=css('--hi'); ctx.textAlign='left'; ctx.fillText(l, L+6, y-3); });
+    if(p.key==='VDC'){ ctx.strokeStyle=css('--eng'); ctx.lineWidth=1.5; eng.forEach(e=>{ const x=xOf(e.t); const h=(1-e.k)*ph*0.35; ctx.beginPath(); ctx.moveTo(x,y1); ctx.lineTo(x,y1-h); ctx.stroke(); }); ctx.lineWidth=1; }
+    ctx.strokeStyle = css(p.color); ctx.lineWidth = 1.1; ctx.beginPath(); let pen=false;
+    for(let j=0;j<rows.length;j++){ const v = num(rows[j],p.key)*p.scale; if(!isFinite(v)){pen=false;continue;} const x=xOf(T[j]), y=yOf(p,i,Math.max(p.min,Math.min(p.max,v))); if(!pen){ctx.moveTo(x,y);pen=true;} else ctx.lineTo(x,y); }
+    ctx.stroke();
+    shots.forEach((s,si)=>{ const x=xOf(shotT[si]); ctx.strokeStyle = s[2]==='on'? css('--on'): css('--off'); ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x,y0); ctx.lineTo(x,y1); ctx.stroke();
+      if(i===0){ ctx.fillStyle = ctx.strokeStyle; const w=ctx.measureText(s[1]).width+8; const yy = y0+6+(si%2)*14; ctx.fillRect(x-w/2, yy, w, 13); ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.fillText(s[1], x, yy+10); } });
+  });
+  if(cur>=0){ const x=xOf(T[cur]); ctx.strokeStyle=css('--cross'); ctx.lineWidth=1; ctx.setLineDash([2,3]); ctx.beginPath(); ctx.moveTo(x,top); ctx.lineTo(x,H-30); ctx.stroke(); ctx.setLineDash([]);
+    panels.forEach((p,i)=>{ const v=num(rows[cur],p.key)*p.scale; if(isFinite(v)){ ctx.fillStyle=css(p.color); ctx.beginPath(); ctx.arc(x,yOf(p,i,Math.max(p.min,Math.min(p.max,v))),3.5,0,7); ctx.fill(); } }); }
+}
+function nearest(t){ let lo=0,hi=T.length-1; while(lo<hi){ const m=(lo+hi)>>1; if(T[m]<t) lo=m+1; else hi=m; } if(lo>0 && Math.abs(T[lo-1]-t)<Math.abs(T[lo]-t)) lo--; return lo; }
+const fmt = v => { if(v==null) return '—'; if(typeof v==='string') return v; const a=Math.abs(v); return a>=100? v.toFixed(0) : a>=10? v.toFixed(1) : v.toFixed(3); };
+const keyRegs = new Set(['sts','hz','f_rot','P_W','VDC','IDC','Q_m3h','shed','shed_min','foc_iq','foc_id','v_dem','v_left','fault','stop_r']);
+function readout(){
+  if(cur<0||!D) return; const r=rows[cur];
+  document.getElementById('when').textContent = r.iso.slice(11)+'  ('+r.iso.slice(0,10)+')';
+  const sh = shots.map((s,i)=>[s,Math.abs(T[cur]-shotT[i])]).filter(x=>x[1]<300e3).map(x=>x[0][1]+' '+x[0][3]+' (droop '+x[0][2]+')');
+  const e = eng.find(e=>Math.abs(e.t-T[cur])<10e3);
+  document.getElementById('state').innerHTML = (pinned?'<span class="pin on">pinned</span>':'<span class="pin">hover</span>') + ' ' + (sh.length? 'shot '+sh.join('; ')+' · ':'') + (e? 'droop engaged: k_min '+e.k.toFixed(3)+' at '+Math.round(e.v)+' V' : '');
+  const keys = cols.filter(k=>k!=='iso'); const first = keys.filter(k=>keyRegs.has(k)), rest = keys.filter(k=>!keyRegs.has(k));
+  document.getElementById('rd').innerHTML = first.concat(rest).map(k=>'<tr class="'+(keyRegs.has(k)?'key':'')+'"><td>'+k+'</td><td>'+fmt(r[k])+'</td></tr>').join('');
+}
+function move(ev){ if(pinned||!D) return; const rect=cv.getBoundingClientRect(); const x=ev.clientX-rect.left; if(x<L||x>W-R) return; cur=nearest(tOf(x)); draw(); readout(); }
+cv.addEventListener('pointermove', move);
+cv.addEventListener('pointerdown', ev=>{ if(pinned){ pinned=false; move(ev); } else { move(ev); pinned=true; } readout(); });
+window.addEventListener('keydown', ev=>{ if(ev.key==='Escape'){pinned=false;} if(pinned && ev.key==='ArrowLeft'){cur=Math.max(0,cur-1);} if(pinned && ev.key==='ArrowRight'){cur=Math.min(rows.length-1,cur+1);} draw(); readout(); });
+window.addEventListener('resize', ()=>{ layout(); draw(); });
+if(window.matchMedia){ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw); }
+new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+let META={};
+async function loadDay(key){
+  document.getElementById('loading').hidden=false; D=null; cur=-1; pinned=false;
+  document.querySelectorAll('.days button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.key===key?'true':'false'));
+  const d = await (await fetch('data/day_'+key+'.json')).json();
+  D=d; rows=d.rows; cols=d.cols; dayIso=d.day; T=rows.map(r=>Date.parse(r.iso.replace(' ','T')));
+  const first = T.find(x=>isFinite(x)), last = T[T.length-1];
+  t0 = Math.min(Date.parse(dayIso+'T05:45:00'), first); t1 = Math.max(Date.parse(dayIso+'T19:10:00'), last);
+  shots = d.shots.filter(s=>s[1] && !/^(pre-A|BLOCK)/.test(s[1])); shotT = shots.map(s=>Date.parse(dayIso+'T'+s[0]));
+  eng = d.eng.map(e=>({t:Date.parse(e.t.replace(' ','T')), k:e.k, v:e.v}));
+  const nat = eng.filter(e=> e.t >= Date.parse(dayIso+'T07:00:00') && !shotT.some(s=>Math.abs(e.t-s)<240e3));
+  const deep = nat.length? nat.reduce((a,b)=> b.k<a.k? b:a, nat[0]) : null;
+  document.getElementById('totals').innerHTML = [
+    [d.summary.kWh+' kWh','energy from the array'], [d.summary.m3+' m³','water delivered'], [nat.length+'','natural droop engagements (k < 0.9)'],
+    [deep? 'k = '+deep.k.toFixed(2)+' at '+Math.round(deep.v)+' V' : '—', deep? 'deepest, '+new Date(deep.t).toTimeString().slice(0,5) : 'deepest'],
+    [shots.length+'','controlled shots (relay box)'], [d.summary.rows+'','samples (3 s)']
+  ].map(x=>'<div><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join('');
+  document.getElementById('loading').hidden=true;
+  layout(); cur = deep? nearest(deep.t) : nearest(Date.parse(dayIso+'T12:00:00')); pinned=true; draw(); readout();
+  history.replaceState(null,'','#'+key);
+}
+async function init(){
+  META = await (await fetch('data/days.json')).json();
+  const box=document.getElementById('days'); const keys=Object.keys(META).sort();
+  box.innerHTML = keys.map(k=>'<button type="button" data-key="'+k+'" aria-pressed="false">'+META[k].day+'</button>').join('') + '<span class="note">click a day to load it (2–8 MB each)</span>';
+  box.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>loadDay(b.dataset.key)));
+  const want = (location.hash||'').slice(1); loadDay(keys.includes(want)? want : '20260911');
+}
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(init); else init();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+app magic 0x48533410  (0826 V/f map, N_TEL=128)
+logging to e2_vf_20260914_131444_retreat2000diag_c.csv - Ctrl-C to stop the LOG (the drive keeps running)
+    0.06s  Vdc  447.0  Idc  10.46  P   4676 W  f 30.02  m 0.739  ON  flags 0  stop 5
+    0.67s  Vdc  450.1  Idc  10.10  P   4548 W  f 30.02  m 0.741  ON  flags 1  stop 5
+    1.34s  Vdc  448.7  Idc  10.27  P   4609 W  f 29.62  m 0.726  ON  flags 0  stop 5
+   11.43s  Vdc  449.2  Idc  10.24  P   4600 W  f 29.66  m 0.726  ON  flags 0  stop 5
+   22.69s  Vdc  450.8  Idc  10.07  P   4538 W  f 29.62  m 0.724  ON  flags 0  stop 5
+   33.83s  Vdc  508.9  Idc  12.33  P   6276 W  f 33.66  m 0.727  ON  flags 0  stop 5
+   44.98s  Vdc  459.5  Idc  35.76  P  16431 W  f 48.42  m 0.940  ON  flags 0  stop 5
+   56.20s  Vdc  462.8  Idc  35.01  P  16204 W  f 48.46  m 0.940  ON  flags 0  stop 5
+   67.37s  Vdc  458.5  Idc  36.05  P  16528 W  f 48.46  m 0.940  ON  flags 0  stop 5
+   78.99s  Vdc  458.8  Idc  35.98  P  16505 W  f 48.86  m 0.940  ON  flags 0  stop 5
+   90.52s  Vdc  460.5  Idc  35.59  P  16386 W  f 48.82  m 0.940  ON  flags 0  stop 5
+  101.66s  Vdc  464.3  Idc  34.71  P  16114 W  f 48.46  m 0.940  ON  flags 0  stop 5
+  112.82s  Vdc  460.5  Idc  35.48  P  16339 W  f 48.42  m 0.940  ON  flags 0  stop 5
+  124.05s  Vdc  457.4  Idc  36.11  P  16518 W  f 48.82  m 0.940  ON  flags 0  stop 5
+  136.30s  Vdc  460.5  Idc  35.52  P  16358 W  f 48.86  m 0.940  ON  flags 0  stop 5
+  147.51s  Vdc  462.9  Idc  34.93  P  16172 W  f 48.82  m 0.940  ON  flags 0  stop 5
+  159.67s  Vdc  459.9  Idc  35.55  P  16349 W  f 48.46  m 0.940  ON  flags 0  stop 5
+  171.88s  Vdc  463.1  Idc  34.79  P  16112 W  f 48.86  m 0.940  ON  flags 0  stop 5

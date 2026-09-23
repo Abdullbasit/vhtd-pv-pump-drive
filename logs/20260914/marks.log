@@ -1,0 +1,90 @@
+10:22:53.094  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=17292 LOAD=OFF STRING=IN stall=7 mqtt=1 rssi=-75
+10:38:21.960  MARK A11 COMBINED string out + load, shed ON, 90 s
+10:38:24.919  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=18224 LOAD=OFF STRING=OUT stall=9 mqtt=1 rssi=-74
+10:38:25.142  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=18224 LOAD=ON STRING=OUT stall=10 mqtt=1 rssi=-75
+10:40:02.099  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=18321 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+10:40:02.301  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=18321 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-74
+10:40:02.345  MARK A11 result: no trip, ON 27.6 Hz
+10:40:55.256  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=18374 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-74
+10:46:48.983  MARK A12 COMBINED string out + load, shed ON, 90 s
+10:46:51.900  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=18731 LOAD=OFF STRING=OUT stall=12 mqtt=1 rssi=-75
+10:46:52.097  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=18731 LOAD=ON STRING=OUT stall=10 mqtt=1 rssi=-74
+10:48:27.233  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=18826 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+10:48:27.440  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=18826 LOAD=OFF STRING=IN stall=9 mqtt=1 rssi=-74
+10:48:27.492  MARK A12 result: no trip, ON 29.1 Hz
+10:49:17.405  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=18876 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-75
+10:55:18.588  MARK B12 COMBINED string out + load, shed OFF, 90 s
+10:55:21.438  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=19240 LOAD=OFF STRING=OUT stall=12 mqtt=1 rssi=-73
+10:55:21.636  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=19241 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-75
+10:56:57.898  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19337 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+10:56:58.090  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19337 LOAD=OFF STRING=IN stall=10 mqtt=1 rssi=-75
+10:56:58.140  MARK B12 result: TRIP FAULT_UV_WAIT
+10:58:29.133  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19428 LOAD=OFF STRING=IN stall=10 mqtt=1 rssi=-75
+11:03:57.829  MARK B13 COMBINED string out + load, shed OFF, 90 s
+11:04:00.812  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=19760 LOAD=OFF STRING=OUT stall=12 mqtt=1 rssi=-74
+11:04:00.994  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=19760 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-75
+11:05:37.767  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19857 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+11:05:37.961  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19857 LOAD=OFF STRING=IN stall=10 mqtt=1 rssi=-74
+11:05:38.013  MARK B13 result: TRIP FAULT_UV_WAIT
+11:07:09.021  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=19948 LOAD=OFF STRING=IN stall=9 mqtt=1 rssi=-74
+11:15:57.659  MARK A14 COMBINED string out + load, shed ON, 90 s
+11:16:00.551  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=20480 LOAD=OFF STRING=OUT stall=13 mqtt=1 rssi=-74
+11:16:00.753  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=20480 LOAD=ON STRING=OUT stall=8 mqtt=1 rssi=-75
+11:17:36.086  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=20575 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+11:17:36.308  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=20575 LOAD=OFF STRING=IN stall=10 mqtt=1 rssi=-74
+11:17:36.363  MARK A14 result: no trip, ON 30.6 Hz
+11:18:29.346  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=20628 LOAD=OFF STRING=IN stall=9 mqtt=1 rssi=-74
+11:21:36.162  MARK A15 COMBINED string out + load, shed ON, 90 s
+11:21:39.095  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=20818 LOAD=OFF STRING=OUT stall=14 mqtt=1 rssi=-74
+11:21:39.288  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=20818 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-75
+11:23:14.616  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=20914 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+11:23:14.818  R1 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=20914 LOAD=OFF STRING=IN stall=11 mqtt=1 rssi=-74
+11:23:14.875  MARK A15 result: no trip, ON 29.6 Hz
+11:24:05.817  ALL OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=20965 LOAD=OFF STRING=IN stall=11 mqtt=1 rssi=-74
+12:22:11.824  STATUS -> [local] OK R1=0 R2=0 R3=0 R4=0 up=24451 LOAD=OFF STRING=IN stall=14 mqtt=1 rssi=-74
+12:22:12.016  MARK E2 V/f baseline shot 1: string out + 7.9kW bank 90s
+12:22:12.429  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=24451 LOAD=OFF STRING=OUT stall=9 mqtt=1 rssi=-74
+12:22:12.846  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=24452 LOAD=ON STRING=OUT stall=8 mqtt=1 rssi=-74
+12:24:37.016  STATUS -> [local] OK R1=0 R2=1 R3=0 R4=0 up=24596 LOAD=OFF STRING=OUT stall=6 mqtt=1 rssi=-74
+12:24:52.577  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=24612 LOAD=OFF STRING=IN stall=8 mqtt=1 rssi=-74
+12:32:00.411  MARK E2 V/f shot 2: string out + 7.9kW bank 90s (5kHz/50A build D2E21DF2)
+12:32:06.357  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=25045 LOAD=OFF STRING=OUT stall=11 mqtt=1 rssi=-74
+12:32:06.774  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=25046 LOAD=ON STRING=OUT stall=10 mqtt=1 rssi=-74
+12:33:43.825  STATUS -> [local] OK R1=0 R2=1 R3=0 R4=0 up=25143 LOAD=OFF STRING=OUT stall=6 mqtt=1 rssi=-74
+12:33:44.240  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=25143 LOAD=OFF STRING=IN stall=9 mqtt=1 rssi=-74
+12:38:34.498  MARK E2 V/f shot 3: string out + 7.9kW bank 90s
+12:38:37.613  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=25437 LOAD=OFF STRING=OUT stall=9 mqtt=1 rssi=-74
+12:38:38.025  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=25437 LOAD=ON STRING=OUT stall=12 mqtt=1 rssi=-74
+12:40:14.189  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=25533 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-74
+12:44:45.043  MARK E2 V/f shot 4: string out + 7.9kW bank 90s
+12:44:48.105  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=25807 LOAD=OFF STRING=OUT stall=9 mqtt=1 rssi=-74
+12:44:48.416  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=25807 LOAD=ON STRING=OUT stall=10 mqtt=1 rssi=-75
+12:46:28.147  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=25907 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-74
+12:50:51.243  MARK E2 V/f shot 5: string out + 7.9kW bank 90s
+12:50:54.290  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=26173 LOAD=OFF STRING=OUT stall=11 mqtt=1 rssi=-78
+12:50:54.689  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=26174 LOAD=ON STRING=OUT stall=10 mqtt=1 rssi=-78
+12:52:35.859  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=26275 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-75
+12:57:34.314  MARK E2b V/f+retreat shot 1: string out + 7.9kW bank 90s (build 45344A9B)
+12:57:37.332  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=26576 LOAD=OFF STRING=OUT stall=10 mqtt=1 rssi=-76
+12:57:37.680  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=26577 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-77
+12:59:38.375  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=26697 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-77
+13:04:32.105  MARK E2b-2 V/f+retreat 2000Hz/s shot 1: string out + 7.9kW bank 90s (BC61E678)
+13:04:35.130  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=26994 LOAD=OFF STRING=OUT stall=9 mqtt=1 rssi=-78
+13:04:35.530  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=26995 LOAD=ON STRING=OUT stall=10 mqtt=1 rssi=-77
+13:06:56.031  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=27135 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-77
+13:13:41.849  MARK E2b-3 V/f+retreat 2000Hz/s (FIXED, C4CD3CAE) shot 1: string out + 7.9kW bank 90s
+13:13:44.911  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=27544 LOAD=OFF STRING=OUT stall=9 mqtt=1 rssi=-78
+13:13:45.325  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=27544 LOAD=ON STRING=OUT stall=11 mqtt=1 rssi=-78
+13:15:23.415  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=27642 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-76
+13:21:39.402  MARK E2b-4 V/f+retreat 2000Hz/s (BC331C8F, diag2) shot: string out + 7.9kW bank 90s
+13:21:42.511  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=28021 LOAD=OFF STRING=OUT stall=10 mqtt=1 rssi=-78
+13:21:42.913  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=28022 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-78
+13:23:20.597  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=28120 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-77
+13:27:19.834  MARK E2b-4 retreat 2000Hz/s shot 2: string out + 7.9kW bank 90s
+13:27:22.891  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=28362 LOAD=OFF STRING=OUT stall=11 mqtt=1 rssi=-77
+13:27:23.290  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=28362 LOAD=ON STRING=OUT stall=9 mqtt=1 rssi=-77
+13:28:59.853  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=28459 LOAD=OFF STRING=IN stall=6 mqtt=1 rssi=-77
+13:32:54.515  MARK E2b-4 retreat 2000Hz/s shot 3: string out + 7.9kW bank 90s
+13:32:57.628  R2 ON -> [local] OK R1=0 R2=1 R3=0 R4=0 up=28697 LOAD=OFF STRING=OUT stall=11 mqtt=1 rssi=-79
+13:32:57.946  R1 ON 90 -> [local] OK R1=1 R2=1 R3=0 R4=0 up=28697 LOAD=ON STRING=OUT stall=11 mqtt=1 rssi=-76
+13:34:30.923  R2 OFF -> [local] OK R1=0 R2=0 R3=0 R4=0 up=28790 LOAD=OFF STRING=IN stall=10 mqtt=1 rssi=-77
