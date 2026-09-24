@@ -108,13 +108,15 @@ The WiFi credentials and the OTA password in
 Code (firmware, tools, relay box): MIT — see `LICENSE`.
 Data (logs, figures, hardware files): CC BY 4.0 — see `LICENSE-data`.
 
-Attribution: cite the paper, and cite this deposit by its DOI.
+Attribution: cite the paper, and cite this deposit by its DOI,
+https://doi.org/10.5281/zenodo.22926515
 
 ## Citing
 
 > A. H. Ahmed, B. M. Saied and Y. M. Ameen, "Field-Validated Voltage-Headroom
 > Torque Droop for Riding Through DC-Link Collapse in PV-Direct Sensorless Pump
-> Drives", [journal], [year]. Data and code: [DOI].
+> Drives", [journal], [year]. Data and code:
+> https://doi.org/10.5281/zenodo.22926515
 
 ## Contact
 
