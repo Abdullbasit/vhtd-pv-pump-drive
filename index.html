@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VHTD PV-direct pump drive — data and code</title>
+<style>
+  :root { --ink:#16202a; --dim:#5b6b7a; --line:#d8e0e8; --bg:#fbfcfd; --accent:#0b6bcb; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink:#e6edf3; --dim:#9aa7b4; --line:#2a3541; --bg:#11171d; --accent:#6cb6ff; }
+  }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+  main { max-width:44rem; margin:0 auto; padding:3rem 16px 4rem; }
+  h1 { font-size:1.5rem; line-height:1.3; margin:0 0 .4rem; font-weight:650; }
+  .sub { color:var(--dim); margin:0 0 2rem; }
+  h2 { font-size:1rem; letter-spacing:.02em; text-transform:uppercase; color:var(--dim);
+       margin:2.4rem 0 .8rem; font-weight:600; }
+  a { color:var(--accent); }
+  ul { list-style:none; padding:0; margin:0; }
+  li { border-top:1px solid var(--line); padding:.85rem 0; }
+  li:last-child { border-bottom:1px solid var(--line); }
+  li a { font-weight:600; text-decoration:none; }
+  li a:hover { text-decoration:underline; }
+  li span { display:block; color:var(--dim); font-size:.92rem; }
+  p.note { color:var(--dim); font-size:.92rem; }
+  code { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.9em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Field-Validated Voltage-Headroom Torque Droop for Riding Through DC-Link Collapse in PV-Direct Sensorless Pump Drives</h1>
+  <p class="sub">A. H. Ahmed, B. M. Saied, Y. M. Ameen — College of Engineering, University of Mosul.
+     Data, code and hardware files behind the paper.</p>
+
+  <h2>Start here</h2>
+  <ul>
+    <li><a href="dashboard/">The field days, interactive</a>
+        <span>Every telemetry register at 3 s for 2026-09-07, 09-10, 09-11 and 09-14, with the controlled shots and the droop engagements marked.</span></li>
+    <li><a href="https://github.com/Abdullbasit/vhtd-pv-pump-drive">The repository</a>
+        <span>Firmware and the binaries that were flashed, hardware design files, the raw instrument records, and the figure scripts. The README maps every figure and table to its data.</span></li>
+    <li><a href="https://doi.org/10.5281/zenodo.22926515">Archived snapshot, DOI 10.5281/zenodo.22926515</a>
+        <span>The citable deposit. It resolves to these files even if the repository moves.</span></li>
+  </ul>
+
+  <h2>The plant</h2>
+  <p>A 22 kW IGBT inverter of our own design driving a 15 kW submersible set — a Chetak 6C-20A
+     motor on an eight-stage Marshal Gold SP 60 — 70 m down a well, supplied directly from a
+     21.96 kW<sub>p</sub> LONGi Hi-MO 7 array with no battery.</p>
+
+  <h2>Checking the numbers</h2>
+  <p class="note">The shot tallies in the paper can be recounted from the relay box's own record.
+     Counting the <code>COMBINED</code> marks in <code>logs/2026091[014]/marks.log</code> gives
+     14 shots with the droop enabled and 11 without, which is the 0/14 against 10/11 of Section X.
+     Binaries carry their CRC-32 in the filename and can be verified against it.</p>
+
+  <p class="note">Code MIT, data and hardware files CC BY 4.0.
+     Contact: abdulbasit.24enp13@student.uomosul.edu.iq</p>
+</main>
+</body>
+</html>
