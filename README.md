@@ -2,6 +2,10 @@
 
 A. H. Ahmed, B. M. Saied, Y. M. Ameen — College of Engineering, University of Mosul.
 
+**The interactive record of the field days:** https://abdullbasit.github.io/vhtd-pv-pump-drive/dashboard/
+**Everything else, one page:** https://abdullbasit.github.io/vhtd-pv-pump-drive/
+**Archived snapshot:** https://doi.org/10.5281/zenodo.22926515
+
 Everything the paper's Data Availability statement refers to is in this tree:
 the firmware that ran on the drive, the binaries that were actually flashed,
 the raw instrument records of every test, the scripts that turn those records
