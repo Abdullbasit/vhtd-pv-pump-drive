@@ -91,6 +91,10 @@ did not trip; `marks.log` shows why, and the paper says so.
     tools/            logging, OTA, relay control, the pair script, the V/f loggers, the figure scripts
     dashboard/        source of the interactive record, page_template.html + per-day JSON
     figures/          every figure of the manuscript as PNG
+    data/             array_iv_20260925.csv, the array measured on 2026-09-25 with the
+                      inverter disconnected: one, two and three strings through the graded
+                      bank, open circuit to short circuit. Its header carries the method
+                      and the instrument accuracies.
 
 Verify a binary against its name:
 
